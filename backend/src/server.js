@@ -1,6 +1,7 @@
-console.log("👉 server.js file loaded");
+// 🔥 MUST be the very first line
+require("dotenv").config();
 
-require("./config/env");
+console.log("👉 server.js file loaded");
 
 const app = require("./app");
 
