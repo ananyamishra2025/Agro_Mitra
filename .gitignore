@@ -12,3 +12,6 @@ frontend/.env
 # Build outputs
 dist/
 build/
+
+# Google API key (sensitive information)
+backend/src/config/google-key.json
