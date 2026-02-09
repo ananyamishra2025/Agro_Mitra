@@ -3,10 +3,14 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const axios = require("axios");
+const path = require("path");
+const voiceRoutes = require("./src/modules/voice/voice.routes");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/api/voice", voiceRoutes);
 
 // Simple request logger
 app.use((req, res, next) => {

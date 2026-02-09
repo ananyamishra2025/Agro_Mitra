@@ -7,22 +7,49 @@ const { processQuestion } = require("../chatbot/chatbot.service");
 const speechClient = new speech.SpeechClient();
 const ttsClient = new textToSpeech.TextToSpeechClient();
 
-const handleVoiceInput = async (audioPath, language = "hi-IN") => {
+const resolveSpeechConfig = (mimeType, language) => {
+  const config = {
+    languageCode: language,
+    enableAutomaticPunctuation: true
+  };
+
+  if (!mimeType) {
+    return config;
+  }
+
+  const normalized = mimeType.toLowerCase();
+  if (normalized.includes("webm")) {
+    config.encoding = "WEBM_OPUS";
+    config.sampleRateHertz = 48000;
+  } else if (normalized.includes("ogg")) {
+    config.encoding = "OGG_OPUS";
+    config.sampleRateHertz = 48000;
+  } else if (normalized.includes("wav")) {
+    config.encoding = "LINEAR16";
+  } else if (normalized.includes("mpeg") || normalized.includes("mp3")) {
+    config.encoding = "MP3";
+  }
+
+  return config;
+};
+
+const handleVoiceInput = async (audioPath, { language = "hi-IN", mimeType } = {}) => {
   // 1️⃣ Speech → Text
   const audioBytes = fs.readFileSync(audioPath).toString("base64");
 
   const request = {
     audio: { content: audioBytes },
-    config: {
-      encoding: "WEBM_OPUS",
-      languageCode: language
-    }
+    config: resolveSpeechConfig(mimeType, language)
   };
 
   const [response] = await speechClient.recognize(request);
-  const textQuestion = response.results
-    .map(r => r.alternatives[0].transcript)
-    .join(" ");
+  const textQuestion = response.results?.length
+    ? response.results.map(r => r.alternatives[0].transcript).join(" ")
+    : "";
+
+  if (!textQuestion) {
+    throw new Error("Speech recognition returned no transcript.");
+  }
 
   // 2️⃣ Text → Chatbot
   const textAnswer = await processQuestion(textQuestion);
@@ -39,13 +66,16 @@ const handleVoiceInput = async (audioPath, language = "hi-IN") => {
 
   const [ttsResponse] = await ttsClient.synthesizeSpeech(ttsRequest);
 
-  const outputFile = `uploads/audio/answer-${Date.now()}.mp3`;
-  fs.writeFileSync(outputFile, ttsResponse.audioContent, "binary");
+  const audioDir = path.resolve(process.cwd(), "uploads", "audio");
+  fs.mkdirSync(audioDir, { recursive: true });
+  const fileName = `answer-${Date.now()}.mp3`;
+  const outputFile = path.join(audioDir, fileName);
+  fs.writeFileSync(outputFile, ttsResponse.audioContent);
 
   return {
     textQuestion,
     textAnswer,
-    audioAnswerUrl: `/${outputFile}`
+    audioAnswerUrl: `/uploads/audio/${fileName}`
   };
 };
 
