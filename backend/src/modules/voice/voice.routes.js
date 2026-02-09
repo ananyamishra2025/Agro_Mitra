@@ -1,10 +1,14 @@
 const express = require("express");
-const multer = require("multer");
-const { voiceChat } = require("./voice.controller");
-
 const router = express.Router();
-const upload = multer({ dest: "uploads/audio" });
+const multer = require("multer");
+const { processVoiceQuestion } = require("./voice.controller");
 
-router.post("/chat", upload.single("audio"), voiceChat);
+const upload = multer({ dest: "uploads/audio/" });
+
+router.post(
+  "/ask",
+  upload.single("audio"),
+  processVoiceQuestion
+);
 
 module.exports = router;

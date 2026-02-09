@@ -1,24 +1,33 @@
-const { speechToText } = require("./voice.service");
-const { textToVoice } = require("./tts.service");
-const { processQuestion } = require("../chatbot/chatbot.service");
+const { handleVoiceInput } = require("./voice.service");
 
-exports.voiceChat = async (req, res) => {
+const processVoiceQuestion = async (req, res) => {
   try {
-    const audioPath = req.file.path;
+    const { language } = req.body;
+    const audioFile = req.file;
 
-    const text = await speechToText(audioPath, "hi-IN");
-    const answer = await processQuestion(text);
-    const audioReply = await textToVoice(answer, "hi-IN");
+    if (!audioFile) {
+      return res.status(400).json({
+        success: false,
+        message: "Audio file is required"
+      });
+    }
+
+    const result = await handleVoiceInput(audioFile.path, language);
 
     res.json({
       success: true,
-      text,
-      answer,
-      audioReply,
+      textQuestion: result.textQuestion,
+      textAnswer: result.textAnswer,
+      audioAnswerUrl: result.audioAnswerUrl
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Voice processing failed" });
+    console.error("Voice chatbot error:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Voice chatbot failed"
+    });
   }
 };
+
+module.exports = { processVoiceQuestion };

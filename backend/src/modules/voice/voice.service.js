@@ -1,27 +1,52 @@
-const speech = require("@google-cloud/speech");
 const fs = require("fs");
+const path = require("path");
+const speech = require("@google-cloud/speech");
+const textToSpeech = require("@google-cloud/text-to-speech");
+const { processQuestion } = require("../chatbot/chatbot.service");
 
-const client = new speech.SpeechClient();
+const speechClient = new speech.SpeechClient();
+const ttsClient = new textToSpeech.TextToSpeechClient();
 
-const speechToText = async (audioFilePath, languageCode = "hi-IN") => {
-  const file = fs.readFileSync(audioFilePath);
-  const audioBytes = file.toString("base64");
+const handleVoiceInput = async (audioPath, language = "hi-IN") => {
+  // 1️⃣ Speech → Text
+  const audioBytes = fs.readFileSync(audioPath).toString("base64");
 
   const request = {
     audio: { content: audioBytes },
     config: {
-      encoding: "WEBM_OPUS",
-      sampleRateHertz: 48000,
-      languageCode, // hi-IN / bn-IN
-    },
+      encoding: "LINEAR16",
+      languageCode: language
+    }
   };
 
-  const [response] = await client.recognize(request);
-  const transcription = response.results
+  const [response] = await speechClient.recognize(request);
+  const textQuestion = response.results
     .map(r => r.alternatives[0].transcript)
     .join(" ");
 
-  return transcription;
+  // 2️⃣ Text → Chatbot
+  const textAnswer = await processQuestion(textQuestion);
+
+  // 3️⃣ Text → Speech
+  const ttsRequest = {
+    input: { text: textAnswer },
+    voice: {
+      languageCode: language,
+      ssmlGender: "NEUTRAL"
+    },
+    audioConfig: { audioEncoding: "MP3" }
+  };
+
+  const [ttsResponse] = await ttsClient.synthesizeSpeech(ttsRequest);
+
+  const outputFile = `uploads/audio/answer-${Date.now()}.mp3`;
+  fs.writeFileSync(outputFile, ttsResponse.audioContent, "binary");
+
+  return {
+    textQuestion,
+    textAnswer,
+    audioAnswerUrl: `/${outputFile}`
+  };
 };
 
-module.exports = { speechToText };
+module.exports = { handleVoiceInput };
