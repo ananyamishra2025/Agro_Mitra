@@ -14,7 +14,7 @@ const handleVoiceInput = async (audioPath, language = "hi-IN") => {
   const request = {
     audio: { content: audioBytes },
     config: {
-      encoding: "LINEAR16",
+      encoding: "WEBM_OPUS",
       languageCode: language
     }
   };

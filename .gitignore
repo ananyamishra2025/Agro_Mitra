@@ -13,5 +13,9 @@ frontend/.env
 dist/
 build/
 
+# Google Cloud keys
 # Google API key (sensitive information)
 backend/src/config/google-key.json
+
+# Uploads
+backend/uploads/
