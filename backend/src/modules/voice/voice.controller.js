@@ -3,8 +3,11 @@ const { handleVoiceInput } = require("./voice.service");
 
 const processVoiceQuestion = async (req, res) => {
   const audioFile = req.file;
+
   try {
+    // 🌍 Default language = Bengali
     const { language } = req.body;
+    const selectedLanguage = language || "bn-IN";
 
     if (!audioFile) {
       return res.status(400).json({
@@ -14,7 +17,7 @@ const processVoiceQuestion = async (req, res) => {
     }
 
     const result = await handleVoiceInput(audioFile.path, {
-      language,
+      language: selectedLanguage,
       mimeType: audioFile.mimetype
     });
 
@@ -24,6 +27,7 @@ const processVoiceQuestion = async (req, res) => {
       textAnswer: result.textAnswer,
       audioAnswerUrl: result.audioAnswerUrl
     });
+
   } catch (error) {
     console.error("Voice chatbot error:", error.message);
     res.status(500).json({
@@ -31,6 +35,7 @@ const processVoiceQuestion = async (req, res) => {
       message: "Voice chatbot failed"
     });
   } finally {
+    // 🧹 Clean temporary uploaded file
     if (audioFile?.path) {
       await fs.unlink(audioFile.path).catch(() => {});
     }

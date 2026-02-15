@@ -15,6 +15,6 @@ router.use("/", recommendationRoutes);
 router.use("/upload", uploadRoutes);
 // 🤖 Chatbot route
 router.use("/chatbot", chatbotRoutes);
-router.use("/api/voice", voiceRoutes);
+router.use("/voice", voiceRoutes);
 
 module.exports = router;
