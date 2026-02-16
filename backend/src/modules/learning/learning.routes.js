@@ -1,12 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const { getLearningResources } = require("./learning.controller");
 
-const {
-  fetchGardeningTips,
-  fetchLearningResources
-} = require("./learning.controller");
-
-router.get("/gardening", fetchGardeningTips);
-router.get("/resources", fetchLearningResources);
+router.get("/resources", getLearningResources);
 
 module.exports = router;

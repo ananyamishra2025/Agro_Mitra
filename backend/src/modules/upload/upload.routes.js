@@ -1,25 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const upload = require("./upload.service");
+const upload = require("./upload.service"); // your multer config
+const { uploadImage } = require("./upload.controller");
 
 router.post(
   "/image",
   upload.single("image"),
-  (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        message: "No image uploaded",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Image uploaded successfully",
-      imageUrl: `/uploads/images/${req.file.filename}`,
-    });
-  }
+  uploadImage
 );
 
 module.exports = router;

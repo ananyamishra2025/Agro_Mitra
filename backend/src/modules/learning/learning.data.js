@@ -1,25 +1,3 @@
-const gardeningTips = [
-  {
-    title: "Home Vegetable Gardening",
-    tips: [
-      "Choose sunlight-rich area (6–8 hours sunlight)",
-      "Use organic compost",
-      "Water early morning",
-      "Avoid overwatering",
-      "Rotate crops every season"
-    ]
-  },
-  {
-    title: "Balcony Gardening",
-    tips: [
-      "Use good quality potting mix",
-      "Ensure drainage holes",
-      "Use lightweight containers",
-      "Select seasonal vegetables"
-    ]
-  }
-];
-
 const learningResources = [
   {
     title: "ICAR Official Website",
@@ -27,7 +5,7 @@ const learningResources = [
     link: "https://icar.org.in"
   },
   {
-    title: "Soil Health Management Guide (PDF)",
+    title: "Soil Health Management Guide",
     type: "document",
     link: "https://agricoop.nic.in"
   },
@@ -37,13 +15,10 @@ const learningResources = [
     link: "https://www.youtube.com/watch?v=whOrC1iKxyA"
   },
   {
-    title: "Modern Irrigation Techniques",
+    title: "Modern Agriculture Techniques",
     type: "video",
-    link: "https://www.youtube.com/watch?v=RjP1kXk8K_E"
+    link: "https://www.youtube.com/watch?v=example"
   }
 ];
 
-module.exports = {
-  gardeningTips,
-  learningResources
-};
+module.exports = { learningResources };

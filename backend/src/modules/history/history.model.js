@@ -9,7 +9,7 @@ const historySchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["chatbot", "advisory", "voice", "demo"], // ✅ added demo
+      enum: ["chatbot", "advisory", "voice", "demo", "image"], // ✅ added demo
       required: true
     },
 
