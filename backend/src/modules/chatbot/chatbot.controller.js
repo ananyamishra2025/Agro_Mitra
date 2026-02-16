@@ -1,10 +1,11 @@
 const { processQuestion } = require("./chatbot.service");
+const { saveHistory } = require("../history/history.service");
 
 const askQuestion = async (req, res) => {
   try {
     const { question } = req.body;
 
-    // ✅ STRICT validation at controller level
+    // ✅ Strict validation
     if (!question || typeof question !== "string") {
       return res.status(400).json({
         success: false,
@@ -12,7 +13,16 @@ const askQuestion = async (req, res) => {
       });
     }
 
+    // 🔹 Process chatbot logic
     const answer = await processQuestion(question);
+
+    // 🔹 Save to History (Static user for now)
+    await saveHistory({
+      userId: "demoUser",   // Later this will come from auth
+      type: "chatbot",
+      input: question,
+      output: answer
+    });
 
     res.json({
       success: true,

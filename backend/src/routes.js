@@ -9,6 +9,8 @@ const uploadRoutes = require("./modules/upload/upload.routes");
 const chatbotRoutes = require("./modules/chatbot/chatbot.routes");
 const voiceRoutes = require("./modules/voice/voice.routes");
 const historyRoutes = require("./modules/history/history.routes");
+const demoRoutes = require("./modules/demo/demo.routes");
+const learningRoutes = require("./modules/learning/learning.routes");
 
 router.use("/advisory", advisoryRoutes);
 router.use("/auth", authRoutes);
@@ -18,5 +20,7 @@ router.use("/upload", uploadRoutes);
 router.use("/chatbot", chatbotRoutes);
 router.use("/voice", voiceRoutes);
 router.use("/history", historyRoutes);
+router.use("/demo", demoRoutes);
+router.use("/learning", learningRoutes);
 
 module.exports = router;

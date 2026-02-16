@@ -1,5 +1,6 @@
 const fs = require("fs/promises");
 const { handleVoiceInput } = require("./voice.service");
+const { saveHistory } = require("../history/history.service");
 
 const processVoiceQuestion = async (req, res) => {
   const audioFile = req.file;
@@ -16,9 +17,21 @@ const processVoiceQuestion = async (req, res) => {
       });
     }
 
+    // 🔹 Process voice input
     const result = await handleVoiceInput(audioFile.path, {
       language: selectedLanguage,
       mimeType: audioFile.mimetype
+    });
+
+    // 🔹 Save history
+    await saveHistory({
+      userId: "demoUser", // static for now
+      type: "voice",
+      input: result.textQuestion,
+      output: result.textAnswer,
+      meta: {
+        language: selectedLanguage
+      }
     });
 
     res.json({
@@ -30,6 +43,7 @@ const processVoiceQuestion = async (req, res) => {
 
   } catch (error) {
     console.error("Voice chatbot error:", error.message);
+
     res.status(500).json({
       success: false,
       message: "Voice chatbot failed"

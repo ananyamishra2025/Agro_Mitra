@@ -9,7 +9,7 @@ const historySchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: ["advisory", "chatbot", "voice"],
+      enum: ["chatbot", "advisory", "voice", "demo"], // ✅ added demo
       required: true
     },
 
@@ -21,14 +21,11 @@ const historySchema = new mongoose.Schema(
     output: {
       type: String,
       required: true
-    },
-
-    meta: {
-      type: Object,
-      default: {}
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true
+  }
 );
 
 module.exports = mongoose.model("History", historySchema);

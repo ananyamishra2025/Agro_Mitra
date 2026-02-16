@@ -1,12 +1,13 @@
 const { generateAdvisory } = require("./advisory.service");
 const { successResponse } = require("../../utils/response");
+const { saveHistory } = require("../history/history.service");
 
 exports.getAdvisory = async (req, res) => {
   try {
     // 1️⃣ Extract farmer-friendly input
     const { location, season, soilType, landSize } = req.body;
 
-    // 2️⃣ Basic validation (simple & clear)
+    // 2️⃣ Basic validation
     if (!location || !season || !soilType || !landSize) {
       return res.status(400).json({
         success: false,
@@ -14,7 +15,7 @@ exports.getAdvisory = async (req, res) => {
       });
     }
 
-    // 3️⃣ Call advisory service (ASYNC)
+    // 3️⃣ Generate advisory (ASYNC)
     const advisory = await generateAdvisory({
       location,
       season,
@@ -22,7 +23,20 @@ exports.getAdvisory = async (req, res) => {
       landSize
     });
 
-    // 4️⃣ Send clean success response
+    // 🔹 4️⃣ Save history
+    await saveHistory({
+      userId: "demoUser",   // static for now
+      type: "advisory",
+      input: JSON.stringify({
+        location,
+        season,
+        soilType,
+        landSize
+      }),
+      output: JSON.stringify(advisory)
+    });
+
+    // 5️⃣ Send clean response
     return successResponse(res, advisory);
 
   } catch (error) {
