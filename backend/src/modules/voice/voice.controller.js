@@ -1,6 +1,7 @@
 const fs = require("fs/promises");
 const { handleVoiceInput } = require("./voice.service");
 const { saveHistory } = require("../history/history.service");
+const { successResponse, errorResponse } = require("../../utils/response");
 
 const processVoiceQuestion = async (req, res) => {
   const audioFile = req.file;
@@ -11,43 +12,42 @@ const processVoiceQuestion = async (req, res) => {
     const selectedLanguage = language || "bn-IN";
 
     if (!audioFile) {
-      return res.status(400).json({
-        success: false,
-        message: "Audio file is required"
-      });
+      return errorResponse(res, "Audio file is required", 400);
     }
 
-    // 🔹 Process voice input
+    // 🎙️ Process voice input
     const result = await handleVoiceInput(audioFile.path, {
       language: selectedLanguage,
       mimeType: audioFile.mimetype
     });
 
-    // 🔹 Save history
-    await saveHistory({
-      userId: "demoUser", // static for now
-      type: "voice",
-      input: result.textQuestion,
-      output: result.textAnswer,
-      meta: {
-        language: selectedLanguage
-      }
-    });
+    // 📝 Save history safely
+    try {
+      await saveHistory({
+        userId: "demoUser",
+        type: "voice",
+        input: result.textQuestion,
+        output: result.textAnswer,
+        meta: { language: selectedLanguage }
+      });
+    } catch (historyError) {
+      console.warn("History save failed:", historyError.message);
+    }
 
-    res.json({
-      success: true,
-      textQuestion: result.textQuestion,
-      textAnswer: result.textAnswer,
-      audioAnswerUrl: result.audioAnswerUrl
-    });
+    // ✅ Standardized success response
+    return successResponse(
+      res,
+      {
+        textQuestion: result.textQuestion,
+        textAnswer: result.textAnswer,
+        audioAnswerUrl: result.audioAnswerUrl
+      },
+      "Voice response generated successfully"
+    );
 
   } catch (error) {
     console.error("Voice chatbot error:", error.message);
-
-    res.status(500).json({
-      success: false,
-      message: "Voice chatbot failed"
-    });
+    return errorResponse(res, "Voice chatbot failed");
   } finally {
     // 🧹 Clean temporary uploaded file
     if (audioFile?.path) {

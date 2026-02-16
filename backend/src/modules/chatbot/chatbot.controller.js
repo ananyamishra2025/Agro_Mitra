@@ -1,42 +1,41 @@
 const { processQuestion } = require("./chatbot.service");
 const { saveHistory } = require("../history/history.service");
+const { successResponse, errorResponse } = require("../../utils/response");
 
 const askQuestion = async (req, res) => {
   try {
     const { question } = req.body;
 
-    // ✅ Strict validation
+    // 🔎 Strict validation
     if (!question || typeof question !== "string") {
-      return res.status(400).json({
-        success: false,
-        message: "Question must be a text string"
-      });
+      return errorResponse(res, "Question must be a text string", 400);
     }
 
-    // 🔹 Process chatbot logic
+    // 🤖 Process chatbot logic
     const answer = await processQuestion(question);
 
-    // 🔹 Save to History (Static user for now)
-    await saveHistory({
-      userId: "demoUser",   // Later this will come from auth
-      type: "chatbot",
-      input: question,
-      output: answer
-    });
+    // 📝 Save history safely (non-blocking)
+    try {
+      await saveHistory({
+        userId: "demoUser", // later replace with real authenticated user
+        type: "chatbot",
+        input: question,
+        output: answer
+      });
+    } catch (historyError) {
+      console.warn("History save failed:", historyError.message);
+    }
 
-    res.json({
-      success: true,
-      question,
-      answer
-    });
+    // ✅ Standardized response
+    return successResponse(
+      res,
+      { question, answer },
+      "Chatbot response generated successfully"
+    );
 
   } catch (error) {
-    console.error("❌ Chatbot error:", error.message);
-
-    res.status(500).json({
-      success: false,
-      message: "Chatbot service failed"
-    });
+    console.error("Chatbot error:", error.message);
+    return errorResponse(res, "Chatbot service failed");
   }
 };
 

@@ -1,30 +1,32 @@
 const { runDemo } = require("./demo.service");
 const { saveHistory } = require("../history/history.service");
+const { successResponse, errorResponse } = require("../../utils/response");
 
 const runDemoController = async (req, res) => {
   try {
     const result = await runDemo();
 
-    // Save demo history
-    await saveHistory({
-      userId: "demoUser",
-      type: "demo",
-      input: "One-click demo executed",
-      output: JSON.stringify(result)
-    });
+    // 📝 Save history safely
+    try {
+      await saveHistory({
+        userId: "demoUser",
+        type: "demo",
+        input: "One-click demo executed",
+        output: JSON.stringify(result)
+      });
+    } catch (historyError) {
+      console.warn("Demo history save failed:", historyError.message);
+    }
 
-    res.json({
-      success: true,
-      message: "Demo executed successfully",
-      data: result
-    });
+    return successResponse(
+      res,
+      result,
+      "Demo executed successfully"
+    );
 
   } catch (error) {
     console.error("Demo error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Demo failed"
-    });
+    return errorResponse(res, "Demo failed");
   }
 };
 

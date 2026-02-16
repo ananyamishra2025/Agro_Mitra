@@ -5,28 +5,35 @@ const cors = require("cors");
 const path = require("path");
 
 const routes = require("./routes");
+const errorHandler = require("./middlewares/error.middleware");
 
 const app = express();
 
-// ✅ Middlewares
+// ================= MIDDLEWARES =================
+
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // for form-data
 
-// 🔴 THIS LINE WAS MISSING (IMPORTANT FOR FORM-DATA & VOICE)
-app.use(express.urlencoded({ extended: true }));
+// ================= STATIC FILES =================
 
-// ✅ Serve uploaded files
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
-// ✅ Mount ALL routes under /api
+// ================= ROUTES =================
+
 app.use("/api", routes);
 
-// ✅ Health check
+// ================= HEALTH CHECK =================
+
 app.get("/", (req, res) => {
   res.json({
     status: "OK",
-    message: "Agro-Mitra backend running",
+    message: "Agro-Mitra backend running"
   });
 });
+
+// ================= GLOBAL ERROR HANDLER =================
+// 🔥 Must be LAST middleware
+app.use(errorHandler);
 
 module.exports = app;

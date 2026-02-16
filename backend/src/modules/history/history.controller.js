@@ -1,8 +1,13 @@
 const { getUserHistory } = require("./history.service");
+const { successResponse, errorResponse } = require("../../utils/response");
 
 const fetchUserHistory = async (req, res) => {
   try {
     const { userId } = req.params;
+
+    if (!userId) {
+      return errorResponse(res, "User ID is required", 400);
+    }
 
     const history = await getUserHistory(userId);
 
@@ -19,19 +24,18 @@ const fetchUserHistory = async (req, res) => {
       })
     }));
 
-    res.json({
-      success: true,
-      count: formattedHistory.length,
-      data: formattedHistory
-    });
+    return successResponse(
+      res,
+      {
+        count: formattedHistory.length,
+        history: formattedHistory
+      },
+      "User history fetched successfully"
+    );
 
   } catch (error) {
     console.error("History fetch error:", error.message);
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to fetch history"
-    });
+    return errorResponse(res, "Failed to fetch history");
   }
 };
 

@@ -1,21 +1,17 @@
 const { generateAdvisory } = require("./advisory.service");
-const { successResponse } = require("../../utils/response");
+const { successResponse, errorResponse } = require("../../utils/response");
 const { saveHistory } = require("../history/history.service");
 
 exports.getAdvisory = async (req, res) => {
   try {
-    // 1️⃣ Extract farmer-friendly input
     const { location, season, soilType, landSize } = req.body;
 
-    // 2️⃣ Basic validation
+    // 🔎 Input Validation
     if (!location || !season || !soilType || !landSize) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide all required details"
-      });
+      return errorResponse(res, "Please provide all required details", 400);
     }
 
-    // 3️⃣ Generate advisory (ASYNC)
+    // 📊 Generate Advisory
     const advisory = await generateAdvisory({
       location,
       season,
@@ -23,28 +19,27 @@ exports.getAdvisory = async (req, res) => {
       landSize
     });
 
-    // 🔹 4️⃣ Save history
-    await saveHistory({
-      userId: "demoUser",   // static for now
-      type: "advisory",
-      input: JSON.stringify({
-        location,
-        season,
-        soilType,
-        landSize
-      }),
-      output: JSON.stringify(advisory)
-    });
+    // 📝 Save History (non-blocking logic)
+    try {
+      await saveHistory({
+        userId: "demoUser", // later replace with real auth user
+        type: "advisory",
+        input: JSON.stringify({ location, season, soilType, landSize }),
+        output: JSON.stringify(advisory)
+      });
+    } catch (historyError) {
+      console.warn("History save failed:", historyError.message);
+    }
 
-    // 5️⃣ Send clean response
-    return successResponse(res, advisory);
+    // ✅ Standardized Success Response
+    return successResponse(
+      res,
+      advisory,
+      "Advisory generated successfully"
+    );
 
   } catch (error) {
     console.error("Advisory Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error"
-    });
+    return errorResponse(res, "Internal server error");
   }
 };

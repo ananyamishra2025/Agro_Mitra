@@ -1,3 +1,6 @@
+const { successResponse, errorResponse } = require("../../utils/response");
+
+// 🔹 Internal Builders (Keep As-Is)
 const buildRecommendation = ({ soil = "loamy", area = 1, budget = 0, location = "Unknown" } = {}) => {
   const normalizedArea = Number.isFinite(Number(area)) && Number(area) > 0 ? Number(area) : 1;
   const normalizedBudget = Number.isFinite(Number(budget)) ? Number(budget) : 0;
@@ -86,19 +89,38 @@ const buildFertilizerPlan = ({ crop = "Maize", soil = "loamy", area = 1 } = {}) 
   };
 };
 
+// 🔹 Demo Controller
 exports.getDemo = (req, res) => {
-  res.json(buildRecommendation({
-    soil: "loamy",
-    area: 2,
-    budget: 8000,
-    location: "Patna, IN",
-  }));
+  try {
+    const demoData = buildRecommendation({
+      soil: "loamy",
+      area: 2,
+      budget: 8000,
+      location: "Patna, IN",
+    });
+
+    return successResponse(res, demoData, "Demo generated successfully");
+  } catch (error) {
+    return errorResponse(res, "Demo generation failed");
+  }
 };
 
+// 🔹 Recommend Controller
 exports.postRecommend = (req, res) => {
-  res.json(buildRecommendation(req.body));
+  try {
+    const result = buildRecommendation(req.body);
+    return successResponse(res, result, "Recommendation generated successfully");
+  } catch (error) {
+    return errorResponse(res, "Recommendation failed");
+  }
 };
 
+// 🔹 Fertilizer Controller
 exports.postFertilizer = (req, res) => {
-  res.json(buildFertilizerPlan(req.body));
+  try {
+    const result = buildFertilizerPlan(req.body);
+    return successResponse(res, result, "Fertilizer calculated successfully");
+  } catch (error) {
+    return errorResponse(res, "Fertilizer calculation failed");
+  }
 };
