@@ -16,9 +16,6 @@ const getWeatherByLocation = async (location) => {
     // 3️⃣ Build request URL
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodedLocation}&units=metric&appid=${apiKey}`;
 
-    // 4️⃣ Debug log (temporary, helpful)
-    console.log("🌦️ Fetching weather from:", url);
-
     // 5️⃣ Call OpenWeather API
     const response = await axios.get(url);
 
