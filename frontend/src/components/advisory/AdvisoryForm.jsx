@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Card from "../common/Card";
 import Button from "../common/Button";
-import { getAdvisory } from "../../api/advisoryApi";
+import { getAdvisory, runDemo } from "../../api/advisoryApi";
 
 const AdvisoryForm = ({ setResult }) => {
   const [formData, setFormData] = useState({
@@ -27,7 +27,20 @@ const AdvisoryForm = ({ setResult }) => {
       setResult(response.data);
     } catch (error) {
       console.error(error);
-      alert("Error fetching advisory");
+      alert(error.response?.data?.message || "Error fetching advisory");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDemo = async () => {
+    try {
+      setLoading(true);
+      const response = await runDemo();
+      setResult(response.data);
+    } catch (error) {
+      console.error(error);
+      alert("Demo failed");
     } finally {
       setLoading(false);
     }
@@ -69,9 +82,13 @@ const AdvisoryForm = ({ setResult }) => {
         />
       </div>
 
-      <div className="mt-4">
-        <Button onClick={handleSubmit}>
+      <div className="mt-6 flex gap-4">
+        <Button onClick={handleSubmit} disabled={loading}>
           {loading ? "Analyzing..." : "Get Recommendation"}
+        </Button>
+
+        <Button variant="secondary" onClick={handleDemo} disabled={loading}>
+          Run Demo
         </Button>
       </div>
     </Card>

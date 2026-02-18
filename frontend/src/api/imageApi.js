@@ -1,8 +1,8 @@
 import axiosInstance from "./axiosInstance";
 
-export const askVoice = async (formData) => {
+export const uploadImage = async (formData) => {
   const response = await axiosInstance.post(
-    "/api/voice/ask",
+    "/api/upload/image",
     formData,
     {
       headers: {

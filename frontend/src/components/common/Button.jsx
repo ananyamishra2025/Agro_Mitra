@@ -1,4 +1,10 @@
-const Button = ({ children, onClick, type = "button", variant = "primary" }) => {
+const Button = ({
+  children,
+  onClick,
+  type = "button",
+  variant = "primary",
+  disabled = false,
+}) => {
   const base =
     "px-5 py-2 rounded-lg font-medium transition duration-200";
 
@@ -11,7 +17,10 @@ const Button = ({ children, onClick, type = "button", variant = "primary" }) => 
     <button
       type={type}
       onClick={onClick}
-      className={`${base} ${styles[variant]}`}
+      disabled={disabled}
+      className={`${base} ${styles[variant]} ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
     >
       {children}
     </button>
