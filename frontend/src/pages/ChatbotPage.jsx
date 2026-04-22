@@ -40,7 +40,7 @@ const ChatbotPage = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">AI Chatbot</h1>
+      <h1 className="text-3xl md:text-4xl font-bold text-green-700 mb-8">AI Chatbot</h1>
 
       <Card>
         <div className="h-96 overflow-y-auto space-y-4 mb-4">

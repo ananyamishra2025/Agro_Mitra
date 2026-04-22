@@ -7,7 +7,7 @@ const AdvisoryPage = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">Crop Advisory</h1>
+      <h1 className="text-3xl md:text-4xl font-bold text-green-700 mb-8">Crop Advisory</h1>
 
       <AdvisoryForm setResult={setResult} />
 
