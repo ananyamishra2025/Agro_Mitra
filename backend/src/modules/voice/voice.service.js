@@ -4,8 +4,24 @@ const speech = require("@google-cloud/speech");
 const textToSpeech = require("@google-cloud/text-to-speech");
 const { processQuestion } = require("../chatbot/chatbot.service");
 
-const speechClient = new speech.SpeechClient();
-const ttsClient = new textToSpeech.TextToSpeechClient();
+let speechClient;
+let ttsClient;
+
+const getSpeechClient = () => {
+  if (!speechClient) {
+    speechClient = new speech.SpeechClient();
+  }
+
+  return speechClient;
+};
+
+const getTextToSpeechClient = () => {
+  if (!ttsClient) {
+    ttsClient = new textToSpeech.TextToSpeechClient();
+  }
+
+  return ttsClient;
+};
 
 // 🔹 Configure Speech Recognition
 const resolveSpeechConfig = (mimeType, language) => {
@@ -47,7 +63,7 @@ const handleVoiceInput = async (
       config: resolveSpeechConfig(mimeType, language)
     };
 
-    const [response] = await speechClient.recognize(request);
+    const [response] = await getSpeechClient().recognize(request);
 
     const textQuestion = response.results?.length
       ? response.results.map(r => r.alternatives[0].transcript).join(" ")
@@ -72,7 +88,7 @@ const handleVoiceInput = async (
       }
     };
 
-    const [ttsResponse] = await ttsClient.synthesizeSpeech(ttsRequest);
+    const [ttsResponse] = await getTextToSpeechClient().synthesizeSpeech(ttsRequest);
 
     // 4️⃣ Save MP3 Response
     const audioDir = path.resolve(process.cwd(), "uploads", "audio");

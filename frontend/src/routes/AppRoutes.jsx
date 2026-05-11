@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
 
 import MainLayout from "../components/layout/MainLayout";
 
@@ -12,90 +12,33 @@ import HistoryPage from "../pages/HistoryPage";
 import LearningPage from "../pages/LearningPage";
 import GardeningPage from "../pages/GardeningPage";
 
-const AppRoutes = () => {
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <MainLayout>
-            <Home />
-          </MainLayout>
-        }
-      />
+const routeMap = {
+  "/": Home,
+  "/dashboard": Dashboard,
+  "/advisory": AdvisoryPage,
+  "/chat": ChatbotPage,
+  "/voice": VoicePage,
+  "/upload": ImageUploadPage,
+  "/history": HistoryPage,
+  "/learning": LearningPage,
+  "/gardening": GardeningPage,
+};
 
-      <Route
-        path="/dashboard"
-        element={
-          <MainLayout>
-            <Dashboard />
-          </MainLayout>
-        }
-      />
+      const AppRoutes = () => {
+  const [path, setPath] = useState(window.location.pathname || "/");
 
-      <Route
-        path="/advisory"
-        element={
-          <MainLayout>
-            <AdvisoryPage />
-          </MainLayout>
-        }
-      />
+      useEffect(() => {
+    const handleRouteChange = () => setPath(window.location.pathname || "/");
+    window.addEventListener("popstate", handleRouteChange);
+    return () => window.removeEventListener("popstate", handleRouteChange);
+  }, []);
 
-      <Route
-        path="/chat"
-        element={
-          <MainLayout>
-            <ChatbotPage />
-          </MainLayout>
-        }
-      />
+      const Page = useMemo(() => routeMap[path] || Home, [path]);
 
-      <Route
-        path="/voice"
-        element={
-          <MainLayout>
-            <VoicePage />
-          </MainLayout>
-        }
-      />
-
-      <Route
-        path="/upload"
-        element={
-          <MainLayout>
-            <ImageUploadPage />
-          </MainLayout>
-        }
-      />
-
-      <Route
-        path="/history"
-        element={
-          <MainLayout>
-            <HistoryPage />
-          </MainLayout>
-        }
-      />
-
-      <Route
-        path="/learning"
-        element={
-          <MainLayout>
-            <LearningPage />
-          </MainLayout>
-        }
-      />
-
-      <Route
-        path="/gardening"
-        element={
-          <MainLayout>
-            <GardeningPage />
-          </MainLayout>
-        }
-      />
-    </Routes>
+      return (
+    <MainLayout currentPath={path}>
+      <Page />
+    </MainLayout>
   );
 };
 

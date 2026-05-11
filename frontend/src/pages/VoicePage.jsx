@@ -15,14 +15,12 @@ const VoicePage = () => {
 
   const handleSubmit = async () => {
     if (!audioFile) return;
-
     const formData = new FormData();
     formData.append("audio", audioFile);
     formData.append("language", language);
 
     try {
       setLoading(true);
-
       const response = await askVoice(formData);
       setResult(response.data);
     } catch (error) {
@@ -34,49 +32,43 @@ const VoicePage = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl md:text-4xl font-bold text-green-700 mb-8">
-        Voice Assistant (Indian Languages)
-      </h1>
+    <div className="space-y-8">
+      <section>
+        <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Accessible assistant</p>
+        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">Voice Assistant</h1>
+        <p className="mt-4 max-w-2xl leading-7 text-slate-600">Upload an audio question and choose the language for processing.</p>
+      </section>
 
-      <Card>
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">
-            Select Language
+      <Card className="max-w-3xl">
+        <div className="grid gap-5">
+          <div>
+            <label className="mb-2 block text-sm font-bold text-slate-700">Select Language</label>
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="w-full rounded-2xl border border-emerald-100 bg-white px-4 py-3 outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100"
+            >
+              <option value="hi-IN">Hindi</option>
+              <option value="en-IN">English</option>
+            </select>
+          </div>
+
+        <label className="rounded-[1.5rem] border-2 border-dashed border-emerald-200 bg-emerald-50/60 p-6 text-center font-bold text-slate-700">
+            🎤 {audioFile ? audioFile.name : "Choose an audio file"}
+            <input type="file" accept="audio/*" onChange={handleFileChange} className="sr-only" />
           </label>
-          <select
-            value={language}
-            onChange={(e) => setLanguage(e.target.value)}
-            className="border p-2 rounded w-full"
-          >
-            <option value="hi-IN">Hindi</option>
-            <option value="en-IN">English</option>
-          </select>
+
+        <Button onClick={handleSubmit} disabled={loading || !audioFile}>
+            {loading ? "Processing..." : "Submit Voice"}
+          </Button>
         </div>
-
-        <input
-          type="file"
-          accept="audio/*"
-          onChange={handleFileChange}
-          className="mb-4"
-        />
-
-        <Button onClick={handleSubmit} disabled={loading}>
-          {loading ? "Processing..." : "Submit Voice"}
-        </Button>
       </Card>
 
       {result && (
-        <Card className="mt-6">
-          <h2 className="text-xl font-semibold text-green-700 mb-2">
-            Response
-          </h2>
-
-          <p className="mb-4">{result?.text}</p>
-
-          {result?.audioUrl && (
-            <audio controls src={result.audioUrl} />
-          )}
+        <Card>
+          <h2 className="text-2xl font-black text-slate-950">Response</h2>
+          <p className="mt-4 leading-7 text-slate-600">{result?.text}</p>
+          {result?.audioUrl && <audio className="mt-5 w-full" controls src={result.audioUrl} />}
         </Card>
       )}
     </div>

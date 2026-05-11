@@ -5,23 +5,24 @@ const Input = ({
   value,
   onChange,
   placeholder,
+  className = "",
 }) => {
   return (
     <div className="flex flex-col space-y-2">
       {label && (
-        <label className="text-sm font-medium text-gray-700">
+        <label className="text-sm font-bold text-slate-700" htmlFor={name}>
           {label}
         </label>
       )}
 
       <input
+        id={name}
         type={type}
         name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="border border-gray-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
-      />
+        className={`rounded-2xl border border-emerald-100 bg-white/90 px-4 py-3 text-slate-800 shadow-inner outline-none transition placeholder:text-slate-400 focus:border-emerald-400 focus:ring-4 focus:ring-emerald-100 ${className}`}      />
     </div>
   );
 };

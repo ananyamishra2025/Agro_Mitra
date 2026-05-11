@@ -1,7 +1,15 @@
+const mongoose = require("mongoose");
 const History = require("./history.model");
+
+const isDatabaseConnected = () => mongoose.connection.readyState === 1;
 
 // 🔥 Save history (with optional meta support)
 const saveHistory = async ({ userId, type, input, output, meta = {} }) => {
+  if (!isDatabaseConnected()) {
+    console.warn("History save skipped: MongoDB is not connected");
+    return null;
+  }
+
   try {
     const entry = await History.create({
       userId,
@@ -20,6 +28,11 @@ const saveHistory = async ({ userId, type, input, output, meta = {} }) => {
 
 // 🔥 Get history (latest first)
 const getUserHistory = async (userId) => {
+  if (!isDatabaseConnected()) {
+    console.warn("History fetch skipped: MongoDB is not connected");
+    return [];
+  }
+
   try {
     return await History
       .find({ userId })

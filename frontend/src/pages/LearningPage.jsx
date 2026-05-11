@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Card from "../components/common/Card";
+import Loader from "../components/common/Loader";
 import { getLearningResources } from "../api/learningApi";
 
 const LearningPage = () => {
@@ -23,25 +24,27 @@ const LearningPage = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-3xl md:text-4xl font-bold text-green-700 mb-8">
-        Agriculture Learning Resources
-      </h1>
+    <div className="space-y-8">
+      <section>
+        <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Knowledge hub</p>
+        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">Agriculture Learning Resources</h1>
+      </section>
 
       {loading ? (
-        <p>Loading resources...</p>
+        <Loader />
       ) : resources.length === 0 ? (
-        <p>No resources available.</p>
+        <Card className="text-center">
+          <p className="text-5xl">📚</p>
+          <h2 className="mt-4 text-2xl font-black text-slate-950">No resources available</h2>
+          <p className="mt-2 text-slate-600">Learning content will show here when the backend returns resources.</p>
+        </Card>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {resources.map((item, index) => (
             <Card key={index}>
-              <h2 className="text-lg font-semibold text-green-700">
-                {item.title}
-              </h2>
-              <p className="text-gray-700 mt-2">
-                {item.description}
-              </p>
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-100 text-2xl">📘</span>
+              <h2 className="mt-5 text-xl font-black text-slate-950">{item.title}</h2>
+              <p className="mt-3 leading-7 text-slate-600">{item.description}</p>
             </Card>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Card from "../common/Card";
 import Button from "../common/Button";
+import Input from "../common/Input";
 import { getAdvisory, runDemo } from "../../api/advisoryApi";
 
 const AdvisoryForm = ({ setResult }) => {
@@ -47,42 +48,47 @@ const AdvisoryForm = ({ setResult }) => {
   };
 
   return (
-    <Card>
-      <div className="grid md:grid-cols-2 gap-4">
-        <input
-          type="text"
-          name="location"
-          placeholder="Location"
-          className="border p-2 rounded"
-          onChange={handleChange}
+    <Card className="border-emerald-100/80">
+      <div className="mb-6">
+        <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-emerald-700">Field details</p>
+        <h2 className="mt-2 text-2xl font-black text-slate-950">Tell us about your farm</h2>
+      </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Input 
+          name="location" 
+          label="Location" 
+          placeholder="e.g. Pune, Maharashtra" 
+          value={formData.location} 
+          onChange={handleChange} 
         />
 
-        <input
-          type="text"
-          name="season"
-          placeholder="Season"
-          className="border p-2 rounded"
-          onChange={handleChange}
+        <Input 
+          name="season" 
+          label="Season" 
+          placeholder="e.g. Kharif / Rabi" 
+          value={formData.season} 
+          onChange={handleChange} 
         />
 
-        <input
-          type="text"
-          name="soilType"
-          placeholder="Soil Type"
-          className="border p-2 rounded"
-          onChange={handleChange}
+        <Input 
+          name="soilType" 
+          label="Soil Type" 
+          placeholder="e.g. Black cotton soil" 
+          value={formData.soilType} 
+          onChange={handleChange} 
         />
 
-        <input
-          type="number"
-          name="landSize"
-          placeholder="Land Size (acres)"
-          className="border p-2 rounded"
-          onChange={handleChange}
+        <Input 
+          name="landSize" 
+          type="number" 
+          label="Land Size" 
+          placeholder="Acres" 
+          value={formData.landSize} 
+          onChange={handleChange} 
         />
       </div>
 
-      <div className="mt-6 flex gap-4">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <Button onClick={handleSubmit} disabled={loading}>
           {loading ? "Analyzing..." : "Get Recommendation"}
         </Button>

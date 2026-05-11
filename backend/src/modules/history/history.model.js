@@ -21,6 +21,11 @@ const historySchema = new mongoose.Schema(
     output: {
       type: String,
       required: true
+    },
+
+    meta: {
+      type: mongoose.Schema.Types.Mixed,
+      default: {}
     }
   },
   {

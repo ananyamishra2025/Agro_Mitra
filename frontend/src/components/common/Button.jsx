@@ -3,26 +3,19 @@ const Button = ({
   onClick,
   type = "button",
   variant = "primary",
-  disabled = false,
 }) => {
-  const base =
-    "px-5 py-2 rounded-xl font-medium transition duration-300";
-
   const styles = {
     primary:
-      "bg-green-600 text-white hover:bg-green-700",
+      "bg-green-700 text-white hover:bg-green-800",
     secondary:
-      "border border-green-600 text-green-700 hover:bg-green-100",
+      "border border-green-700 text-green-700 hover:bg-green-50",
   };
 
   return (
     <button
       type={type}
       onClick={onClick}
-      disabled={disabled}
-      className={`${base} ${styles[variant]} ${
-        disabled ? "opacity-50 cursor-not-allowed" : ""
-      }`}
+      className={`px-5 py-2 rounded-xl font-medium transition duration-300 ${styles[variant]}`}
     >
       {children}
     </button>
