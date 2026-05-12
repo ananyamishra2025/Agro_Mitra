@@ -1,102 +1,78 @@
-import { useState } from "react";
-import { isActivePath, navigateTo } from "../../utils/navigation";
+import { Link, useLocation } from "react-router-dom";
+import { Leaf } from "lucide-react";
+import Button from "../common/Button";
 
-const navItems = [
-  { label: "Home", path: "/" },
-  { label: "Dashboard", path: "/dashboard" },
-  { label: "Advisory", path: "/advisory" },
-  { label: "Chat", path: "/chat" },
-  { label: "Learning", path: "/learning" },
-];
+const Navbar = () => {
+  const location = useLocation();
 
-export default function Navbar({ currentPath = "/" }) {
-  const [open, setOpen] = useState(false);
-
-  const handleNavigate = (path) => {
-    navigateTo(path);
-    setOpen(false);
-  };
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Dashboard", path: "/dashboard" },
+    { name: "Advisory", path: "/advisory" },
+    { name: "AI Chat", path: "/chat" },
+    { name: "Voice", path: "/voice" },
+    { name: "Learning", path: "/learning" },
+  ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/70 bg-white/80 backdrop-blur-xl">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex min-h-20 items-center justify-between gap-4">
-          <button
-            type="button"
-            onClick={() => handleNavigate("/")}
-            className="group flex items-center gap-3 text-left"
-            aria-label="Go to Agro-Mitra home"
-          >
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-emerald-600 to-lime-500 text-2xl text-white shadow-lg shadow-emerald-600/25 transition group-hover:scale-105">
-              🌾
-            </span>
-            <span>
-              <span className="block text-xl font-black tracking-tight text-slate-900">
-                Agro-Mitra
-              </span>
-              <span className="block text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
-                Smart farming UI
-              </span>
-            </span>
-          </button>
+    <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-green-100 shadow-sm">
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
-          <nav className="hidden items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50/70 p-1 lg:flex">
-            {navItems.map((item) => {
-              const active = isActivePath(currentPath, item.path);
-              return (
-                <button
-                  key={item.path}
-                  type="button"
-                  onClick={() => handleNavigate(item.path)}
-                  className={`rounded-full px-4 py-2 text-sm font-bold transition ${
-                    active
-                      ? "bg-white text-emerald-700 shadow-sm"
-                      : "text-slate-600 hover:bg-white/70 hover:text-emerald-700"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              );
-            })}
-          </nav>
+        {/* LEFT LOGO */}
+        <Link
+          to="/"
+          className="flex items-center gap-2"
+        >
+          <div className="bg-green-100 p-2 rounded-xl">
+            <Leaf className="text-green-700" size={24} />
+          </div>
 
-          <button
-            type="button"
-            onClick={() => handleNavigate("/dashboard")}
-            className="hidden rounded-2xl bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-slate-900/15 transition hover:-translate-y-0.5 hover:bg-emerald-700 md:inline-flex"
-          >
-            Open app →
-          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-green-700">
+              Agro-Mitra
+            </h1>
 
-          <button
-            type="button"
-            aria-label="Toggle navigation menu"
-            onClick={() => setOpen((value) => !value)}
-            className="rounded-2xl border border-emerald-100 bg-white px-4 py-3 text-slate-700 shadow-sm lg:hidden"
-          >
-            ☰
-          </button>
+            <p className="text-xs text-gray-500">
+              Smart Agriculture System
+            </p>
+          </div>
+        </Link>
+
+        {/* CENTER NAVIGATION */}
+        <div className="hidden md:flex items-center gap-8">
+
+          {navLinks.map((link, index) => (
+            <Link
+              key={index}
+              to={link.path}
+              className={`font-medium transition duration-300 hover:text-green-700 ${
+                location.pathname === link.path
+                  ? "text-green-700"
+                  : "text-gray-600"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+
         </div>
 
-        {open && (
-          <nav className="grid gap-2 pb-5 lg:hidden">
-            {navItems.map((item) => (
-              <button
-                key={item.path}
-                type="button"
-                onClick={() => handleNavigate(item.path)}
-                className={`rounded-2xl px-4 py-3 text-left text-sm font-bold ${
-                  isActivePath(currentPath, item.path)
-                    ? "bg-emerald-600 text-white"
-                    : "bg-white/80 text-slate-700"
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        )}
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-4">
+
+          <Button variant="secondary">
+            Demo
+          </Button>
+
+          <div className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center font-semibold">
+            A
+          </div>
+
+        </div>
+
       </div>
-    </header>
+    </nav>
   );
-}
+};
+
+export default Navbar;
