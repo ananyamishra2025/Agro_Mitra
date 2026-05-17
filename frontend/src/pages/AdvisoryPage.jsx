@@ -1,22 +1,44 @@
 import { useState } from "react";
 import AdvisoryForm from "../components/advisory/AdvisoryForm";
 import AdvisoryResult from "../components/advisory/AdvisoryResult";
+import BackButton from "../components/common/BackButton";
 
 const AdvisoryPage = () => {
   const [result, setResult] = useState(null);
 
   return (
     <div className="space-y-8">
-      <section>
-        <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">AI crop planning</p>
-        <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-950 md:text-5xl">Crop Advisory</h1>
-        <p className="mt-4 max-w-2xl leading-7 text-slate-600">
-          Enter your farm context to get polished recommendations for crops, fertilizer, and next actions.
+      <BackButton />
+      {/* HERO SECTION */}
+      <section className="relative overflow-hidden rounded-[2rem] bg-gradient-to-r from-green-900 via-emerald-800 to-lime-700 p-10 text-white shadow-2xl">
+
+        {/* Glow Effect */}
+        <div className="absolute top-0 right-0 h-72 w-72 rounded-full bg-white/10 blur-3xl"></div>
+
+        {/* Small Heading */}
+        <p className="font-extrabold uppercase tracking-[0.3em] text-lime-100">
+          AI Crop Planning
         </p>
+
+        {/* Main Heading */}
+        <h1 className="mt-4 text-5xl font-black leading-tight md:text-6xl">
+          Crop Advisory
+        </h1>
+
+        {/* Description */}
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-emerald-50">
+          Enter your farm details to receive intelligent recommendations
+          for crops, fertilizer, irrigation, and seasonal planning.
+        </p>
+
       </section>
 
+      {/* FORM SECTION */}
       <AdvisoryForm setResult={setResult} />
+
+      {/* RESULT SECTION */}
       {result && <AdvisoryResult data={result} />}
+
     </div>
   );
 };

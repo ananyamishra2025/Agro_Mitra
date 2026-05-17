@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "../components/layout/MainLayout";
 
@@ -8,37 +8,98 @@ import AdvisoryPage from "../pages/AdvisoryPage";
 import ChatbotPage from "../pages/ChatbotPage";
 import VoicePage from "../pages/VoicePage";
 import ImageUploadPage from "../pages/ImageUploadPage";
-import HistoryPage from "../pages/HistoryPage";
 import LearningPage from "../pages/LearningPage";
 import GardeningPage from "../pages/GardeningPage";
+import HistoryPage from "../pages/HistoryPage";
 
-const routeMap = {
-  "/": Home,
-  "/dashboard": Dashboard,
-  "/advisory": AdvisoryPage,
-  "/chat": ChatbotPage,
-  "/voice": VoicePage,
-  "/upload": ImageUploadPage,
-  "/history": HistoryPage,
-  "/learning": LearningPage,
-  "/gardening": GardeningPage,
-};
+const AppRoutes = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
 
-      const AppRoutes = () => {
-  const [path, setPath] = useState(window.location.pathname || "/");
+        <Route
+          path="/"
+          element={
+            <MainLayout>
+              <Home />
+            </MainLayout>
+          }
+        />
 
-      useEffect(() => {
-    const handleRouteChange = () => setPath(window.location.pathname || "/");
-    window.addEventListener("popstate", handleRouteChange);
-    return () => window.removeEventListener("popstate", handleRouteChange);
-  }, []);
+        <Route
+          path="/dashboard"
+          element={
+            <MainLayout>
+              <Dashboard />
+            </MainLayout>
+          }
+        />
 
-      const Page = useMemo(() => routeMap[path] || Home, [path]);
+        <Route
+          path="/advisory"
+          element={
+            <MainLayout>
+              <AdvisoryPage />
+            </MainLayout>
+          }
+        />
 
-      return (
-    <MainLayout currentPath={path}>
-      <Page />
-    </MainLayout>
+        <Route
+          path="/chat"
+          element={
+            <MainLayout>
+              <ChatbotPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/voice"
+          element={
+            <MainLayout>
+              <VoicePage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/upload"
+          element={
+            <MainLayout>
+              <ImageUploadPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/learning"
+          element={
+            <MainLayout>
+              <LearningPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/gardening"
+          element={
+            <MainLayout>
+              <GardeningPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/history"
+          element={
+            <MainLayout>
+              <HistoryPage />
+            </MainLayout>
+          }
+        />
+
+      </Routes>
+    </BrowserRouter>
   );
 };
 

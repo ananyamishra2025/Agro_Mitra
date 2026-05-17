@@ -37,7 +37,7 @@ const Home = () => {
           <div className="mb-5 inline-flex rounded-full border border-emerald-200 bg-white/80 px-4 py-2 text-sm font-extrabold text-emerald-700 shadow-sm">
             ✨ Smart Agriculture Assistance System
           </div>
-          <h1 className="max-w-4xl text-5xl font-black leading-tight tracking-tight text-slate-950 md:text-7xl">
+          <h1 className="text-5xl font-bold text-green-800 leading-tight">
             Grow better with a beautiful, simple farm companion.
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">

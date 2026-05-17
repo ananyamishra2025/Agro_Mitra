@@ -2,6 +2,7 @@ import { useState } from "react";
 import Card from "../components/common/Card";
 import Button from "../components/common/Button";
 import { uploadImage } from "../api/imageApi";
+import BackButton from "../components/common/BackButton";
 
 const ImageUploadPage = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -34,9 +35,10 @@ const ImageUploadPage = () => {
 
   return (
     <div className="space-y-8">
+      <BackButton />
       <section>
         <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Plant health</p>
-        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">Image Disease Detection</h1>
+        <h1 className="text-5xl font-bold text-green-800 leading-tight">Image Disease Detection</h1>
       </section>
 
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">

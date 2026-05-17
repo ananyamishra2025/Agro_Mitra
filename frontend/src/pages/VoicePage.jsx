@@ -2,6 +2,7 @@ import { useState } from "react";
 import Card from "../components/common/Card";
 import Button from "../components/common/Button";
 import { askVoice } from "../api/voiceApi";
+import BackButton from "../components/common/BackButton";
 
 const VoicePage = () => {
   const [audioFile, setAudioFile] = useState(null);
@@ -33,9 +34,10 @@ const VoicePage = () => {
 
   return (
     <div className="space-y-8">
+      <BackButton />
       <section>
         <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Accessible assistant</p>
-        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">Voice Assistant</h1>
+        <h1 className="text-5xl font-bold text-green-800 leading-tight">Voice Assistant</h1>
         <p className="mt-4 max-w-2xl leading-7 text-slate-600">Upload an audio question and choose the language for processing.</p>
       </section>
 
@@ -53,7 +55,7 @@ const VoicePage = () => {
             </select>
           </div>
 
-        <label className="rounded-[1.5rem] border-2 border-dashed border-emerald-200 bg-emerald-50/60 p-6 text-center font-bold text-slate-700">
+        <label className="rounded-3xl border-2 border-dashed border-emerald-200 bg-emerald-50/60 p-6 text-center font-bold text-slate-700">
             🎤 {audioFile ? audioFile.name : "Choose an audio file"}
             <input type="file" accept="audio/*" onChange={handleFileChange} className="sr-only" />
           </label>

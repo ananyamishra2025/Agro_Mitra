@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Card from "../components/common/Card";
 import Loader from "../components/common/Loader";
 import { getHistory } from "../api/historyApi";
+import BackButton from "../components/common/BackButton";
 
 const HistoryPage = () => {
   const [history, setHistory] = useState([]);
@@ -26,9 +27,10 @@ const HistoryPage = () => {
 
   return (
     <div className="space-y-8">
+      <BackButton />
       <section>
         <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Activity timeline</p>
-        <h1 className="mt-3 text-4xl font-black text-slate-950 md:text-5xl">User History</h1>
+        <h1 className="text-5xl font-bold text-green-800 leading-tight">User History</h1>
       </section>
 
       {loading ? (
