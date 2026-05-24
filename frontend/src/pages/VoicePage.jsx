@@ -37,8 +37,8 @@ const VoicePage = () => {
       <BackButton />
       <section>
         <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Accessible assistant</p>
-        <h1 className="text-5xl font-bold text-green-800 leading-tight">Voice Assistant</h1>
-        <p className="mt-4 max-w-2xl leading-7 text-slate-600">Upload an audio question and choose the language for processing.</p>
+        <h1 className="mt-4 text-5xl md:text-6xl font-extrabold leading-tight">Voice Assistant</h1>
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-emerald-50">Upload an audio question and choose the language for processing.</p>
       </section>
 
       <Card className="max-w-3xl">

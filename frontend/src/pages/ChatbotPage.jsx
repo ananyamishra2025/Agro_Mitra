@@ -67,7 +67,7 @@ const ChatbotPage = () => {
           Conversational Help
         </p>
 
-        <h1 className="mt-4 text-5xl font-black leading-tight md:text-6xl">
+        <h1 className="mt-4 text-5xl md:text-6xl font-extrabold leading-tight">
           AI Chatbot
         </h1>
 
@@ -91,7 +91,7 @@ const ChatbotPage = () => {
             </div>
 
             <div>
-              <h2 className="text-2xl font-black">
+              <h2 className="text-4xl font-black text-slate-900">
                 Agro Assistant
               </h2>
 

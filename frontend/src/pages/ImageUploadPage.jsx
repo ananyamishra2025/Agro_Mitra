@@ -38,7 +38,7 @@ const ImageUploadPage = () => {
       <BackButton />
       <section>
         <p className="font-extrabold uppercase tracking-[0.25em] text-emerald-700">Plant health</p>
-        <h1 className="text-5xl font-bold text-green-800 leading-tight">Image Disease Detection</h1>
+        <h1 className="mt-4 text-5xl md:text-6xl font-extrabold leading-tight">Image Disease Detection</h1>
       </section>
 
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">

@@ -72,11 +72,11 @@ const Dashboard = () => {
           Smart Agriculture Platform
         </p>
 
-        <h1 className="mt-4 text-5xl font-black leading-tight md:text-6xl">
+        <h1 className="mt-4 text-5xl md:text-6xl font-extrabold leading-tight">
           Agro-Mitra Dashboard
         </h1>
 
-        <p className="mt-6 max-w-3xl text-lg leading-8 text-emerald-50">
+        <p className="mt-6 max-w-2xl text-lg leading-8 text-emerald-50">
           Access AI-powered crop advisory, chatbot assistance,
           voice support, image-based disease detection, and
           learning resources — all in one smart agriculture system.

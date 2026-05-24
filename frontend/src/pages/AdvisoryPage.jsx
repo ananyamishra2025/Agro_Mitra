@@ -21,7 +21,7 @@ const AdvisoryPage = () => {
         </p>
 
         {/* Main Heading */}
-        <h1 className="mt-4 text-5xl font-black leading-tight md:text-6xl">
+        <h1 className="mt-4 text-5xl md:text-6xl font-extrabold leading-tight">
           Crop Advisory
         </h1>
 
