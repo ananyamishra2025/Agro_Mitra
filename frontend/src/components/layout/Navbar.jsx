@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Leaf } from "lucide-react";
+import { Leaf, LogIn } from "lucide-react";
 import Button from "../common/Button";
 
 const Navbar = () => {
@@ -58,15 +58,18 @@ const Navbar = () => {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
 
-          <Button variant="secondary">
-            Demo
+          <Link to="/contact" className="hidden rounded-xl border border-green-700 bg-white px-5 py-3 font-bold text-green-800 shadow-md transition hover:-translate-y-0.5 hover:bg-green-50 hover:shadow-lg lg:inline-flex">
+            Contact
+          </Link>
+
+          <Button onClick={() => { window.location.href = "/account"; }}>
+            <span className="inline-flex items-center gap-2">
+              <LogIn size={18} />
+              Sign In / Sign Up
+            </span>
           </Button>
-
-          <div className="w-10 h-10 rounded-full bg-green-700 text-white flex items-center justify-center font-semibold">
-            A
-          </div>
 
         </div>
 

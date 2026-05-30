@@ -64,21 +64,21 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="hidden lg:flex flex-col w-72 min-h-screen bg-white border-r border-green-100 shadow-sm p-6">
+    <aside className="hidden lg:flex min-h-screen w-60 flex-col border-r border-green-100 bg-green-900 p-4 text-white shadow-xl shadow-green-950/10">
 
       {/* LOGO */}
-      <div className="flex items-center gap-3 mb-10">
+      <div className="mb-8 flex items-center gap-3">
 
-        <div className="bg-green-100 p-3 rounded-2xl">
-          <Sprout className="text-green-700" />
+        <div className="rounded-xl bg-white/12 p-2.5 ring-1 ring-white/15">
+          <Sprout className="text-lime-200" />
         </div>
 
         <div>
-          <h1 className="text-2xl font-bold text-green-700">
+          <h1 className="text-xl font-black text-white">
             Agro-Mitra
           </h1>
 
-          <p className="text-sm text-gray-500">
+          <p className="text-xs font-medium text-green-100">
             Smart Farming Platform
           </p>
         </div>
@@ -86,16 +86,16 @@ const Sidebar = () => {
       </div>
 
       {/* MENU */}
-      <nav className="flex flex-col gap-2">
+      <nav className="flex flex-col gap-1.5">
 
         {menuItems.map((item, index) => (
           <Link
             key={index}
             to={item.path}
-            className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition duration-300 font-medium ${
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition duration-300 ${
               location.pathname === item.path
-                ? "bg-green-700 text-white shadow-md"
-                : "text-gray-700 hover:bg-green-50 hover:text-green-700"
+                ? "bg-white text-green-900 shadow-md"
+                : "text-green-50 hover:bg-white/10 hover:text-white"
             }`}
           >
             {item.icon}
@@ -106,13 +106,13 @@ const Sidebar = () => {
       </nav>
 
       {/* BOTTOM INFO */}
-      <div className="mt-auto bg-green-50 rounded-2xl p-5 border border-green-100">
+      <div className="mt-auto rounded-xl border border-white/10 bg-white/10 p-4">
 
-        <h3 className="font-semibold text-green-700 mb-2">
+        <h3 className="mb-2 font-bold text-lime-100">
           Agro-Mitra AI
         </h3>
 
-        <p className="text-sm text-gray-600">
+        <p className="text-xs leading-5 text-green-50">
           AI-powered agriculture assistance platform
           for farmers, gardeners, and students.
         </p>

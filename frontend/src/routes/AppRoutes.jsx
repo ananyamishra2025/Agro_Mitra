@@ -11,6 +11,9 @@ import ImageUploadPage from "../pages/ImageUploadPage";
 import LearningPage from "../pages/LearningPage";
 import GardeningPage from "../pages/GardeningPage";
 import HistoryPage from "../pages/HistoryPage";
+import ContactPage from "../pages/ContactPage";
+import AccountPage from "../pages/AccountPage";
+import FutureScopePage from "../pages/FutureScopePage";
 
 const AppRoutes = () => {
   return (
@@ -94,6 +97,29 @@ const AppRoutes = () => {
           element={
             <MainLayout>
               <HistoryPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/contact"
+          element={
+            <MainLayout>
+              <ContactPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/account"
+          element={<AccountPage />}
+        />
+
+        <Route
+          path="/future"
+          element={
+            <MainLayout>
+              <FutureScopePage />
             </MainLayout>
           }
         />
