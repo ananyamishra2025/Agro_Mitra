@@ -8,6 +8,54 @@ body {
   color: #1f2937;
 }
 
+.dark-mode body {
+  background: #07140d;
+  color: #e5f6ec;
+}
+
+.dark-mode nav,
+.dark-mode main,
+.dark-mode footer {
+  color-scheme: dark;
+}
+
+.dark-mode .bg-white,
+.dark-mode .bg-white\/95,
+.dark-mode .bg-white\/90 {
+  background-color: #0f2117 !important;
+}
+
+.dark-mode .bg-\[\#f8faf8\],
+.dark-mode .bg-\[\#f7fbf6\] {
+  background-color: #07140d !important;
+}
+
+.dark-mode .text-slate-950,
+.dark-mode .text-slate-900,
+.dark-mode .text-slate-800 {
+  color: #f4fff7 !important;
+}
+
+.dark-mode .text-slate-700,
+.dark-mode .text-slate-600,
+.dark-mode .text-slate-500 {
+  color: #b8cfc0 !important;
+}
+
+.dark-mode .border-slate-200,
+.dark-mode .border-slate-100,
+.dark-mode .border-emerald-100 {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+}
+
+.dark-mode .bg-slate-50,
+.dark-mode .bg-slate-50\/70,
+.dark-mode .bg-emerald-50,
+.dark-mode .bg-emerald-50\/70,
+.dark-mode .bg-green-100 {
+  background-color: rgba(21, 128, 61, 0.16) !important;
+}
+
 * {
   box-sizing: border-box;
 }

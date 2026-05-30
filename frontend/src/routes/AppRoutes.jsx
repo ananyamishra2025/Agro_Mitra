@@ -14,6 +14,7 @@ import HistoryPage from "../pages/HistoryPage";
 import ContactPage from "../pages/ContactPage";
 import AccountPage from "../pages/AccountPage";
 import FutureScopePage from "../pages/FutureScopePage";
+import SettingsPage from "../pages/SettingsPage";
 
 const AppRoutes = () => {
   return (
@@ -120,6 +121,15 @@ const AppRoutes = () => {
           element={
             <MainLayout>
               <FutureScopePage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <MainLayout>
+              <SettingsPage />
             </MainLayout>
           }
         />

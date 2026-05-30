@@ -48,7 +48,7 @@ const AdvisoryForm = ({ setResult }) => {
   };
 
   return (
-    <Card className="border-emerald-100/80">
+    <Card className="border-emerald-100/80 p-7">
       <div className="mb-6">
         <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-emerald-700">Field details</p>
         <h2 className="mt-2 text-2xl font-black text-slate-950">Tell us about your farm</h2>

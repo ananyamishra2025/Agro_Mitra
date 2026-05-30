@@ -75,10 +75,10 @@ const features = [
 ];
 
 const trustItems = [
-  ["6+", "Smart modules"],
-  ["24/7", "Digital help"],
-  ["3", "User groups"],
-  ["AI", "Farm guidance"],
+  ["1000+", "Farmers"],
+  ["95%", "Accuracy"],
+  ["24/7", "Support"],
+  ["8+", "Modules"],
 ];
 
 const aboutHighlights = [

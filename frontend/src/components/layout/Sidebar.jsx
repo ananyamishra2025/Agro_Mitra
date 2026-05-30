@@ -10,6 +10,10 @@ import {
   History,
   Flower2,
   FlaskConical,
+  Settings,
+  UserRound,
+  Headphones,
+  Circle,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -61,10 +65,20 @@ const Sidebar = () => {
       path: "/future",
       icon: <FlaskConical size={18} />,
     },
+    {
+      name: "Profile",
+      path: "/account",
+      icon: <UserRound size={18} />,
+    },
+    {
+      name: "Settings",
+      path: "/settings",
+      icon: <Settings size={18} />,
+    },
   ];
 
   return (
-    <aside className="hidden lg:flex min-h-screen w-60 flex-col border-r border-green-100 bg-green-900 p-4 text-white shadow-xl shadow-green-950/10">
+    <aside className="hidden min-h-screen w-60 flex-col border-r border-green-900 bg-gradient-to-b from-green-950 via-green-900 to-emerald-950 p-5 text-white shadow-xl shadow-green-950/10 lg:flex">
 
       {/* LOGO */}
       <div className="mb-8 flex items-center gap-3">
@@ -86,6 +100,8 @@ const Sidebar = () => {
       </div>
 
       {/* MENU */}
+      <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-green-200/80">Menu</p>
+
       <nav className="flex flex-col gap-1.5">
 
         {menuItems.map((item, index) => (
@@ -106,17 +122,41 @@ const Sidebar = () => {
       </nav>
 
       {/* BOTTOM INFO */}
-      <div className="mt-auto rounded-xl border border-white/10 bg-white/10 p-4">
+      <div className="mt-auto space-y-4">
+        <div className="rounded-xl border border-white/10 bg-white/10 p-4">
+          <div className="flex items-center gap-3">
+            <span className="grid h-11 w-11 place-items-center rounded-full bg-lime-100 font-black text-green-900">
+              A
+            </span>
+            <div>
+              <h3 className="font-black text-white">Ananya Mishra</h3>
+              <p className="text-xs font-semibold text-green-100">Farmer / Student</p>
+            </div>
+          </div>
+          <p className="mt-3 flex items-center gap-2 text-xs font-bold text-lime-100">
+            <Circle size={8} fill="currentColor" />
+            Online
+          </p>
+        </div>
 
-        <h3 className="mb-2 font-bold text-lime-100">
-          Agro-Mitra AI
-        </h3>
+        <div className="rounded-xl border border-white/10 bg-white/10 p-4">
+
+        <div className="mb-3 flex items-center gap-2">
+          <Headphones size={18} className="text-lime-200" />
+          <h3 className="font-bold text-lime-100">
+            Need Help?
+          </h3>
+        </div>
 
         <p className="text-xs leading-5 text-green-50">
-          AI-powered agriculture assistance platform
-          for farmers, gardeners, and students.
+          We are here to assist your farming workflow.
         </p>
 
+        <Link to="/contact" className="mt-4 inline-flex rounded-lg border border-white/30 px-4 py-2 text-xs font-black text-white transition hover:bg-white hover:text-green-900">
+          Contact Support
+        </Link>
+
+        </div>
       </div>
 
     </aside>
