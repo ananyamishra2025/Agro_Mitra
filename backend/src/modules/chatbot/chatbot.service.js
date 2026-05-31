@@ -1,4 +1,4 @@
-const { askOpenAI } = require("./chatbot.ai.service");
+const { askGroq } = require("./chatbot.ai.service");
 
 // 🔹 Rule-based answers (fast, farmer-friendly, works offline)
 const ruleBasedAnswers = (question) => {
@@ -37,8 +37,8 @@ const processQuestion = async (question) => {
     return ruleAnswer;
   }
 
-  // 2️⃣ OpenAI fallback (AI-powered)
-  const aiAnswer = await askOpenAI(question);
+  // 2️⃣ Groq fallback (AI-powered)
+  const aiAnswer = await askGroq(question);
   if (aiAnswer) {
     return aiAnswer;
   }

@@ -47,7 +47,7 @@ const request = (app, { method = "GET", path = "/", body } = {}) => new Promise(
 });
 
 test("app imports and serves health check without optional API keys", async () => {
-  delete process.env.OPENAI_API_KEY;
+  delete process.env.GROQ_API_KEY;
   delete process.env.OPENWEATHER_API_KEY;
 
   const app = require("../src/app");
@@ -57,8 +57,8 @@ test("app imports and serves health check without optional API keys", async () =
   assert.equal(response.body.status, "OK");
 });
 
-test("chatbot route returns rule-based answers without OpenAI credentials", async () => {
-  delete process.env.OPENAI_API_KEY;
+test("chatbot route returns rule-based answers without Groq credentials", async () => {
+  delete process.env.GROQ_API_KEY;
 
   const app = require("../src/app");
   const response = await request(app, {
@@ -80,4 +80,66 @@ test("history route does not hang when MongoDB is disconnected", async () => {
   assert.equal(response.body.success, true);
   assert.equal(response.body.data.count, 0);
   assert.deepEqual(response.body.data.history, []);
+});
+
+test("dashboard overview serves frontend stats", async () => {
+  const app = require("../src/app");
+  const response = await request(app, { path: "/api/dashboard/overview" });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.user.name, "Ananya Mishra");
+  assert.equal(typeof response.body.data.stats.totalQueries, "number");
+});
+
+test("contact route accepts enquiries", async () => {
+  const app = require("../src/app");
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/contact",
+    body: {
+      name: "Test User",
+      contact: "test@example.com",
+      message: "Need crop advisory help"
+    }
+  });
+
+  assert.equal(response.statusCode, 201);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.status, "new");
+});
+
+test("settings route returns user preferences", async () => {
+  const app = require("../src/app");
+  const response = await request(app, { path: "/api/settings" });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.profile.name, "Ananya Mishra");
+});
+
+test("future route returns planned features", async () => {
+  const app = require("../src/app");
+  const response = await request(app, { path: "/api/future" });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.ok(response.body.data.features.length >= 4);
+});
+
+test("auth register creates frontend account profile", async () => {
+  const app = require("../src/app");
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/auth/register",
+    body: {
+      name: "Ananya Mishra",
+      email: "ananya@example.com",
+      password: "secret"
+    }
+  });
+
+  assert.equal(response.statusCode, 201);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.user.name, "Ananya Mishra");
 });

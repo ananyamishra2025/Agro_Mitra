@@ -13,6 +13,15 @@ router.get("/", (req, res) => {
       "POST   /api/chatbot/ask",
       "POST   /api/voice/ask",
       "GET    /api/history/:userId",
+      "GET    /api/dashboard/overview",
+      "POST   /api/contact",
+      "GET    /api/contact",
+      "GET    /api/settings",
+      "POST   /api/settings",
+      "GET    /api/future",
+      "POST   /api/auth/register",
+      "POST   /api/auth/login",
+      "POST   /api/auth/google",
       "GET    /api/demo/run",
       "POST   /api/upload/image",
       "GET    /api/gardening",
@@ -34,6 +43,10 @@ const historyRoutes = require("./modules/history/history.routes");
 const demoRoutes = require("./modules/demo/demo.routes");
 const gardeningRoutes = require("./modules/gardening/gardening.routes");
 const learningRoutes = require("./modules/learning/learning.routes");
+const dashboardRoutes = require("./modules/dashboard/dashboard.routes");
+const contactRoutes = require("./modules/contact/contact.routes");
+const settingsRoutes = require("./modules/settings/settings.routes");
+const futureRoutes = require("./modules/future/future.routes");
 
 // Register all routes
 router.use("/advisory", advisoryRoutes);
@@ -46,5 +59,9 @@ router.use("/history", historyRoutes);
 router.use("/demo", demoRoutes);
 router.use("/gardening", gardeningRoutes);
 router.use("/learning", learningRoutes);
+router.use("/dashboard", dashboardRoutes);
+router.use("/contact", contactRoutes);
+router.use("/settings", settingsRoutes);
+router.use("/future", futureRoutes);
 
 module.exports = router;

@@ -1,37 +1,39 @@
-const OpenAI = require("openai");
+const Groq = require("groq-sdk");
 
-let openaiClient;
+const DEFAULT_MODEL = "openai/gpt-oss-120b";
 
-const getOpenAIClient = () => {
-  if (!process.env.OPENAI_API_KEY) {
+let groqClient;
+
+const getGroqClient = () => {
+  if (!process.env.GROQ_API_KEY) {
     return null;
   }
 
-  if (!openaiClient) {
-    openaiClient = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+  if (!groqClient) {
+    groqClient = new Groq({
+      apiKey: process.env.GROQ_API_KEY,
     });
   }
 
-  return openaiClient;
+  return groqClient;
 };
 
-const askOpenAI = async (question) => {
-  const openai = getOpenAIClient();
+const askGroq = async (question) => {
+  const groq = getGroqClient();
 
-  if (!openai) {
-    console.warn("⚠️ OPENAI_API_KEY is missing. Using chatbot fallback response.");
+  if (!groq) {
+    console.warn("GROQ_API_KEY is missing. Using chatbot fallback response.");
     return null;
   }
 
   try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await groq.chat.completions.create({
+      model: process.env.GROQ_MODEL || DEFAULT_MODEL,
       messages: [
         {
           role: "system",
           content:
-            "You are an agriculture assistant for Indian farmers. Answer in simple words.",
+            "You are Agro-Mitra, an agriculture assistant for Indian farmers, gardeners, and students. Give practical, safe, simple guidance. Mention that local agriculture experts should be consulted for high-risk decisions.",
         },
         {
           role: "user",
@@ -39,13 +41,16 @@ const askOpenAI = async (question) => {
         },
       ],
       temperature: 0.4,
+      max_completion_tokens: 1024,
+      top_p: 1,
+      stream: false,
     });
 
-    return response.choices[0].message.content;
+    return response.choices?.[0]?.message?.content || null;
   } catch (error) {
-    console.error("❌ OpenAI Error:", error.message);
+    console.error("Groq API Error:", error.response?.data || error.message);
     return null;
   }
 };
 
-module.exports = { askOpenAI };
+module.exports = { askGroq };

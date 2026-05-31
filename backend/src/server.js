@@ -9,8 +9,8 @@ if (!process.env.MONGO_URI) {
   console.warn("⚠️ Warning: MONGO_URI not set. Database features may not work.");
 }
 
-if (!process.env.OPENAI_API_KEY) {
-  console.warn("⚠️ Warning: OPENAI_API_KEY not set. AI chatbot may not work.");
+if (!process.env.GROQ_API_KEY) {
+  console.warn("⚠️ Warning: GROQ_API_KEY not set. AI chatbot may not work.");
 }
 
 if (!process.env.OPENWEATHER_API_KEY) {
