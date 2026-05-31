@@ -15,6 +15,8 @@ import ContactPage from "../pages/ContactPage";
 import AccountPage from "../pages/AccountPage";
 import FutureScopePage from "../pages/FutureScopePage";
 import SettingsPage from "../pages/SettingsPage";
+import ProfilePage from "../pages/ProfilePage";
+import NotificationsPage from "../pages/NotificationsPage";
 
 const AppRoutes = () => {
   return (
@@ -130,6 +132,24 @@ const AppRoutes = () => {
           element={
             <MainLayout>
               <SettingsPage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/profile"
+          element={
+            <MainLayout>
+              <ProfilePage />
+            </MainLayout>
+          }
+        />
+
+        <Route
+          path="/notifications"
+          element={
+            <MainLayout>
+              <NotificationsPage />
             </MainLayout>
           }
         />

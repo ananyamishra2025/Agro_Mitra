@@ -75,6 +75,9 @@ const Navbar = () => {
                     </div>
                   ))}
                 </div>
+                <Link to="/notifications" className="mt-3 inline-flex text-sm font-black text-emerald-700">
+                  View notification center →
+                </Link>
               </div>
             )}
           </div>
@@ -98,7 +101,7 @@ const Navbar = () => {
             </span>
           </Button>
 
-          <div className="hidden items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] 2xl:flex">
+          <Link to="/profile" className="hidden items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] 2xl:flex">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-emerald-50 text-emerald-700">
               <UserRound size={20} />
             </span>
@@ -107,7 +110,7 @@ const Navbar = () => {
               <p className="text-xs font-medium text-slate-500">Farmer</p>
             </div>
             <ChevronDown size={18} className="text-slate-500" />
-          </div>
+          </Link>
 
         </div>
 

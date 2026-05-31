@@ -36,6 +36,15 @@ const axiosInstance = {
 
     return parseResponse(response);
   },
+  put: async (url, body, config = {}) => {
+    const response = await fetch(buildUrl(url), {
+      method: "PUT",
+      body: JSON.stringify(body),
+      headers: { "Content-Type": "application/json", ...(config.headers || {}) },
+    });
+
+    return parseResponse(response);
+  },
 
 };
 

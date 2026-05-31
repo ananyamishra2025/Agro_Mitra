@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Eye, Leaf, Lock, LogIn, Mail, MessageSquare, Mic, Sprout, User, UserPlus } from "lucide-react";
 import authFarm from "../assets/images/auth-farm-landscape.png";
+import { loginUser, loginWithGoogle, registerUser } from "../api/authApi";
 
 const benefits = [
   {
@@ -48,7 +49,68 @@ const AppleIcon = () => (
 
 const AccountPage = () => {
   const [mode, setMode] = useState("signin");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const isSignIn = mode === "signin";
+
+  const handleChange = (field) => (event) => {
+    setFormData((current) => ({ ...current, [field]: event.target.value }));
+  };
+
+  const saveUserAndContinue = (user) => {
+    localStorage.setItem("agroMitraUser", JSON.stringify(user));
+    setStatus(`${isSignIn ? "Signed in" : "Account created"} successfully. Redirecting...`);
+    setTimeout(() => {
+      window.location.href = "/dashboard";
+    }, 700);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setStatus("");
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = isSignIn
+        ? await loginUser({ email: formData.email, password: formData.password })
+        : await registerUser({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+          });
+
+      saveUserAndContinue(response.data.user);
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "Account request failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    setStatus("");
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await loginWithGoogle({
+        name: formData.name || "Ananya Mishra",
+        email: formData.email || "ananya.mishra@example.com",
+      });
+      saveUserAndContinue(response.data.user);
+    } catch (requestError) {
+      setError(requestError.response?.data?.message || "Google sign in failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f7fbf6] px-4 py-8 sm:px-8 lg:px-12">
@@ -136,7 +198,19 @@ const AccountPage = () => {
               </button>
             </div>
 
-            <form className="mt-8 space-y-6">
+            {status && (
+              <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">
+                {status}
+              </div>
+            )}
+
+            {error && (
+              <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
+                {error}
+              </div>
+            )}
+
+            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               {!isSignIn && (
                 <div>
                   <label className="text-sm font-black text-slate-800">Full Name</label>
@@ -144,7 +218,7 @@ const AccountPage = () => {
                     <span className="grid w-14 place-items-center bg-emerald-50 text-emerald-700">
                       <User size={20} />
                     </span>
-                    <input className="min-h-14 flex-1 px-4 font-medium outline-none" placeholder="Enter your full name" />
+                    <input value={formData.name} onChange={handleChange("name")} className="min-h-14 flex-1 px-4 font-medium outline-none" placeholder="Enter your full name" />
                   </div>
                 </div>
               )}
@@ -155,7 +229,7 @@ const AccountPage = () => {
                   <span className="grid w-14 place-items-center bg-emerald-50 text-emerald-700">
                     <Mail size={20} />
                   </span>
-                  <input className="min-h-14 flex-1 px-4 font-medium outline-none" placeholder="Enter your email" />
+                  <input value={formData.email} onChange={handleChange("email")} className="min-h-14 flex-1 px-4 font-medium outline-none" placeholder="Enter your email" type="email" />
                 </div>
               </div>
 
@@ -165,7 +239,7 @@ const AccountPage = () => {
                   <span className="grid w-14 place-items-center bg-emerald-50 text-emerald-700">
                     <Lock size={20} />
                   </span>
-                  <input className="min-h-14 flex-1 px-4 font-medium outline-none" placeholder="Enter your password" type="password" />
+                  <input value={formData.password} onChange={handleChange("password")} className="min-h-14 flex-1 px-4 font-medium outline-none" placeholder="Enter your password" type="password" />
                   <span className="grid w-14 place-items-center text-slate-500">
                     <Eye size={21} />
                   </span>
@@ -183,11 +257,12 @@ const AccountPage = () => {
               )}
 
               <button
-                type="button"
+                type="submit"
+                disabled={loading}
                 className="flex min-h-14 w-full items-center justify-center gap-3 rounded-xl bg-green-700 px-5 py-4 text-lg font-black text-white shadow-lg shadow-green-900/20 transition hover:-translate-y-0.5 hover:bg-green-800"
               >
                 {isSignIn ? <LogIn size={24} /> : <UserPlus size={24} />}
-                {isSignIn ? "Sign In" : "Sign Up"}
+                {loading ? "Please wait..." : isSignIn ? "Sign In" : "Sign Up"}
               </button>
             </form>
 
@@ -198,7 +273,7 @@ const AccountPage = () => {
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <button type="button" className="flex min-h-12 items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 text-lg font-black text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              <button type="button" onClick={handleGoogle} className="flex min-h-12 items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white px-4 text-lg font-black text-slate-900 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
                 <GoogleIcon />
                 Google
               </button>

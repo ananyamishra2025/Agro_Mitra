@@ -67,7 +67,7 @@ const Sidebar = () => {
     },
     {
       name: "Profile",
-      path: "/account",
+      path: "/profile",
       icon: <UserRound size={18} />,
     },
     {

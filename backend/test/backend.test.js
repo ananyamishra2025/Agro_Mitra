@@ -143,3 +143,31 @@ test("auth register creates frontend account profile", async () => {
   assert.equal(response.body.success, true);
   assert.equal(response.body.data.user.name, "Ananya Mishra");
 });
+
+test("auth change password updates registered account", async () => {
+  const app = require("../src/app");
+
+  await request(app, {
+    method: "POST",
+    path: "/api/auth/register",
+    body: {
+      name: "Password User",
+      email: "password@example.com",
+      password: "old-secret"
+    }
+  });
+
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/auth/change-password",
+    body: {
+      email: "password@example.com",
+      currentPassword: "old-secret",
+      newPassword: "new-secret"
+    }
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.equal(response.body.data.user.email, "password@example.com");
+});
