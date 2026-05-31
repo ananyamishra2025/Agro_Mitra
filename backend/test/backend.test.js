@@ -2,7 +2,7 @@ const assert = require("node:assert/strict");
 const http = require("node:http");
 const test = require("node:test");
 
-const request = (app, { method = "GET", path = "/", body } = {}) => new Promise((resolve, reject) => {
+const request = (app, { method = "GET", path = "/", body, headers = {} } = {}) => new Promise((resolve, reject) => {
   const server = app.listen(0, () => {
     const { port } = server.address();
     const payload = body ? JSON.stringify(body) : undefined;
@@ -12,12 +12,15 @@ const request = (app, { method = "GET", path = "/", body } = {}) => new Promise(
         port,
         path,
         method,
-        headers: payload
-          ? {
-              "Content-Type": "application/json",
-              "Content-Length": Buffer.byteLength(payload)
-            }
-          : {}
+        headers: {
+          ...(payload
+            ? {
+                "Content-Type": "application/json",
+                "Content-Length": Buffer.byteLength(payload)
+              }
+            : {}),
+          ...headers
+        }
       },
       (res) => {
         let data = "";
@@ -142,12 +145,13 @@ test("auth register creates frontend account profile", async () => {
   assert.equal(response.statusCode, 201);
   assert.equal(response.body.success, true);
   assert.equal(response.body.data.user.name, "Ananya Mishra");
+  assert.ok(response.body.data.token);
 });
 
 test("auth change password updates registered account", async () => {
   const app = require("../src/app");
 
-  await request(app, {
+  const registered = await request(app, {
     method: "POST",
     path: "/api/auth/register",
     body: {
@@ -160,8 +164,10 @@ test("auth change password updates registered account", async () => {
   const response = await request(app, {
     method: "POST",
     path: "/api/auth/change-password",
+    headers: {
+      Authorization: `Bearer ${registered.body.data.token}`
+    },
     body: {
-      email: "password@example.com",
       currentPassword: "old-secret",
       newPassword: "new-secret"
     }
@@ -170,4 +176,131 @@ test("auth change password updates registered account", async () => {
   assert.equal(response.statusCode, 200);
   assert.equal(response.body.success, true);
   assert.equal(response.body.data.user.email, "password@example.com");
+});
+
+test("auth profile and logout use JWT", async () => {
+  const app = require("../src/app");
+  const registered = await request(app, {
+    method: "POST",
+    path: "/api/auth/register",
+    body: {
+      name: "Profile User",
+      email: "profile@example.com",
+      password: "secret"
+    }
+  });
+
+  const token = registered.body.data.token;
+  const profile = await request(app, {
+    path: "/api/auth/me",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  assert.equal(profile.statusCode, 200);
+  assert.equal(profile.body.data.user.email, "profile@example.com");
+
+  const logout = await request(app, {
+    method: "POST",
+    path: "/api/auth/logout",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  assert.equal(logout.statusCode, 200);
+
+  const afterLogout = await request(app, {
+    path: "/api/auth/me",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  assert.equal(afterLogout.statusCode, 401);
+});
+
+test("password reset flow updates password", async () => {
+  const app = require("../src/app");
+  await request(app, {
+    method: "POST",
+    path: "/api/auth/register",
+    body: {
+      name: "Reset User",
+      email: "reset@example.com",
+      password: "old-secret"
+    }
+  });
+
+  const forgot = await request(app, {
+    method: "POST",
+    path: "/api/auth/forgot-password",
+    body: { email: "reset@example.com" }
+  });
+
+  assert.equal(forgot.statusCode, 200);
+  assert.ok(forgot.body.data.resetToken);
+
+  const reset = await request(app, {
+    method: "POST",
+    path: "/api/auth/reset-password",
+    body: {
+      token: forgot.body.data.resetToken,
+      newPassword: "new-secret"
+    }
+  });
+
+  assert.equal(reset.statusCode, 200);
+});
+
+test("admin routes support user management", async () => {
+  const app = require("../src/app");
+  const login = await request(app, {
+    method: "POST",
+    path: "/api/auth/login",
+    body: {
+      email: "admin@agromitra.in",
+      password: "admin123"
+    }
+  });
+
+  const token = login.body.data.token;
+  const overview = await request(app, {
+    path: "/api/admin/overview",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  assert.equal(overview.statusCode, 200);
+  assert.equal(overview.body.success, true);
+
+  const users = await request(app, {
+    path: "/api/admin/users",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+  assert.equal(users.statusCode, 200);
+  assert.ok(users.body.data.users.length >= 1);
+});
+
+test("database models are registered for required collections", async () => {
+  const mongoose = require("mongoose");
+
+  require("../src/modules/auth/user.model");
+  require("../src/modules/auth/auth-token.model");
+  require("../src/modules/history/history.model");
+  require("../src/modules/contact/contact.model");
+  require("../src/modules/upload/crop-disease.model");
+  require("../src/modules/learning/learning-resource.model");
+  require("../src/modules/advisory/weather-cache.model");
+  require("../src/modules/saved/saved-query.model");
+  require("../src/modules/saved/saved-report.model");
+  require("../src/modules/activity/activity-log.model");
+
+  const modelNames = mongoose.modelNames();
+
+  assert.ok(modelNames.includes("User"));
+  assert.ok(modelNames.includes("AuthToken"));
+  assert.ok(modelNames.includes("History"));
+  assert.ok(modelNames.includes("Contact"));
+  assert.ok(modelNames.includes("CropDisease"));
+  assert.ok(modelNames.includes("LearningResource"));
+  assert.ok(modelNames.includes("WeatherCache"));
+  assert.ok(modelNames.includes("SavedQuery"));
+  assert.ok(modelNames.includes("SavedReport"));
+  assert.ok(modelNames.includes("ActivityLog"));
 });

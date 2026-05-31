@@ -29,6 +29,11 @@ router.get("/", (req, res) => {
       "POST   /api/auth/reset-password",
       "GET    /api/admin/overview",
       "GET    /api/admin/users",
+      "GET    /api/saved/queries/:userId",
+      "POST   /api/saved/queries",
+      "GET    /api/saved/reports/:userId",
+      "POST   /api/saved/reports",
+      "GET    /api/activity/:userId",
       "GET    /api/demo/run",
       "POST   /api/upload/image",
       "GET    /api/gardening",
@@ -55,6 +60,8 @@ const contactRoutes = require("./modules/contact/contact.routes");
 const settingsRoutes = require("./modules/settings/settings.routes");
 const futureRoutes = require("./modules/future/future.routes");
 const adminRoutes = require("./modules/admin/admin.routes");
+const savedRoutes = require("./modules/saved/saved.routes");
+const activityRoutes = require("./modules/activity/activity.routes");
 
 // Register all routes
 router.use("/advisory", advisoryRoutes);
@@ -72,5 +79,7 @@ router.use("/contact", contactRoutes);
 router.use("/settings", settingsRoutes);
 router.use("/future", futureRoutes);
 router.use("/admin", adminRoutes);
+router.use("/saved", savedRoutes);
+router.use("/activity", activityRoutes);
 
 module.exports = router;

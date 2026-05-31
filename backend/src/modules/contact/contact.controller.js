@@ -1,7 +1,7 @@
 const { successResponse, errorResponse } = require("../../utils/response");
 const { createContactEnquiry, listContactEnquiries } = require("./contact.service");
 
-const submitContactEnquiry = (req, res) => {
+const submitContactEnquiry = async (req, res) => {
   try {
     const { name, contact, message } = req.body;
 
@@ -9,7 +9,7 @@ const submitContactEnquiry = (req, res) => {
       return errorResponse(res, "Name, contact, and message are required", 400);
     }
 
-    const enquiry = createContactEnquiry(req.body);
+    const enquiry = await createContactEnquiry(req.body);
     return successResponse(res, enquiry, "Enquiry submitted successfully", 201);
   } catch (error) {
     console.error("Contact enquiry error:", error.message);
@@ -17,10 +17,10 @@ const submitContactEnquiry = (req, res) => {
   }
 };
 
-const fetchContactEnquiries = (req, res) => {
+const fetchContactEnquiries = async (req, res) => {
   return successResponse(
     res,
-    { enquiries: listContactEnquiries() },
+    { enquiries: await listContactEnquiries() },
     "Contact enquiries fetched successfully"
   );
 };

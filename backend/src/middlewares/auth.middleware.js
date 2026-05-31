@@ -5,7 +5,7 @@ const {
   verifyToken,
 } = require("../modules/auth/auth.service");
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
 
@@ -13,14 +13,14 @@ const authenticate = (req, res, next) => {
     return errorResponse(res, "Authentication token is required", 401);
   }
 
-  if (isTokenRevoked(token)) {
+  if (await isTokenRevoked(token)) {
     return errorResponse(res, "Session has been logged out", 401);
   }
 
   try {
     const payload = verifyToken(token);
     req.authToken = token;
-    req.user = getProfile(payload.sub);
+    req.user = await getProfile(payload.sub);
     return next();
   } catch (error) {
     return errorResponse(res, "Invalid or expired token", 401);

@@ -7,14 +7,15 @@ const {
 const { listContactEnquiries } = require("../contact/contact.service");
 const { futureScopes } = require("../future/future.data");
 
-const overview = (req, res) => {
-  const users = listUsers();
+const overview = async (req, res) => {
+  const users = await listUsers();
+  const contactEnquiries = await listContactEnquiries();
   return successResponse(
     res,
     {
       stats: {
         users: users.length,
-        enquiries: listContactEnquiries().length,
+        enquiries: contactEnquiries.length,
         futureFeatures: futureScopes.length,
       },
       recentUsers: users.slice(-5).reverse(),
@@ -23,32 +24,32 @@ const overview = (req, res) => {
   );
 };
 
-const users = (req, res) => {
-  return successResponse(res, { users: listUsers() }, "Users fetched successfully");
+const users = async (req, res) => {
+  return successResponse(res, { users: await listUsers() }, "Users fetched successfully");
 };
 
-const changeRole = (req, res) => {
+const changeRole = async (req, res) => {
   try {
-    const user = updateUserRole(req.params.userId, req.body.role);
+    const user = await updateUserRole(req.params.userId, req.body.role);
     return successResponse(res, { user }, "User role updated successfully");
   } catch (error) {
     return errorResponse(res, error.message, 400);
   }
 };
 
-const changeStatus = (req, res) => {
+const changeStatus = async (req, res) => {
   try {
-    const user = updateUserStatus(req.params.userId, req.body.status);
+    const user = await updateUserStatus(req.params.userId, req.body.status);
     return successResponse(res, { user }, "User status updated successfully");
   } catch (error) {
     return errorResponse(res, error.message, 400);
   }
 };
 
-const enquiries = (req, res) => {
+const enquiries = async (req, res) => {
   return successResponse(
     res,
-    { enquiries: listContactEnquiries() },
+    { enquiries: await listContactEnquiries() },
     "Admin enquiries fetched successfully"
   );
 };

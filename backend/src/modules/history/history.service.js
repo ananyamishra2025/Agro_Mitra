@@ -1,7 +1,5 @@
-const mongoose = require("mongoose");
 const History = require("./history.model");
-
-const isDatabaseConnected = () => mongoose.connection.readyState === 1;
+const { isDatabaseConnected } = require("../../utils/database");
 
 // 🔥 Save history (with optional meta support)
 const saveHistory = async ({ userId, type, input, output, meta = {} }) => {

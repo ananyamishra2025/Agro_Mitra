@@ -1,5 +1,8 @@
 const fs = require("fs/promises");
+
 const { detectDisease } = require("./disease.service");
+const { saveCropDiseaseReport } = require("./crop-disease.service");
+const { logActivity } = require("../activity/activity.service");
 const { saveHistory } = require("../history/history.service");
 const { successResponse, errorResponse } = require("../../utils/response");
 
@@ -11,41 +14,51 @@ exports.uploadImage = async (req, res) => {
       return errorResponse(res, "Image file is required", 400);
     }
 
-    // 🛡 Basic validation
     if (!imageFile.mimetype.startsWith("image/")) {
       return errorResponse(res, "Only image files are allowed", 400);
     }
-    
-    // 🔎 Run disease detection
-    const prediction = detectDisease(imageFile.originalname);
 
-    // 💾 Save history without blocking the upload response
+    const userId = req.user?.id || "demoUser";
+    const prediction = detectDisease(imageFile.originalname);
+    const report = await saveCropDiseaseReport({
+      userId,
+      cropName: req.body.cropName || "",
+      imageName: imageFile.originalname,
+      prediction,
+    });
+
     try {
       await saveHistory({
-        userId: "demoUser",
+        userId,
         type: "image",
         input: imageFile.originalname,
-        output: prediction.disease
+        output: prediction.disease,
+      });
+      await logActivity({
+        userId,
+        action: "crop_disease_detected",
+        entityType: "CropDisease",
+        entityId: report.id,
+        message: `${prediction.disease} detected from uploaded crop image`,
+        meta: { confidence: prediction.confidence },
       });
     } catch (historyError) {
-      console.warn("Image history save failed:", historyError.message);
+      console.warn("Image history/activity save failed:", historyError.message);
     }
 
     return successResponse(
       res,
       {
         image: imageFile.filename,
-        prediction
+        prediction,
+        report,
       },
       "Image processed successfully"
     );
-
   } catch (error) {
     console.error("Image detection error:", error.message);
-
     return errorResponse(res, "Image processing failed");
   } finally {
-    // Optional: delete uploaded file after processing
     if (imageFile?.path) {
       await fs.unlink(imageFile.path).catch(() => {});
     }

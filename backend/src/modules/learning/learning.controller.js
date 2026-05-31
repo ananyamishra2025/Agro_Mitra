@@ -1,6 +1,8 @@
-const { learningResources } = require("./learning.data");
+const { getLearningResources } = require("./learning.service");
 
-exports.getLearningResources = (req, res) => {
+exports.getLearningResources = async (req, res) => {
+  const learningResources = await getLearningResources();
+
   res.json({
     success: true,
     count: learningResources.length,
