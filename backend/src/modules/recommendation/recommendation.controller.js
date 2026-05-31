@@ -1,75 +1,6 @@
+const { classifyCrops } = require("../ai/crop-classifier.service");
+const { buildRecommendation } = require("../ai/recommendation-engine.service");
 const { successResponse, errorResponse } = require("../../utils/response");
-
-// 🔹 Internal Builders (Keep As-Is)
-const buildRecommendation = ({ soil = "loamy", area = 1, budget = 0, location = "Unknown" } = {}) => {
-  const normalizedArea = Number.isFinite(Number(area)) && Number(area) > 0 ? Number(area) : 1;
-  const normalizedBudget = Number.isFinite(Number(budget)) ? Number(budget) : 0;
-  const normalizedSoil = soil || "loamy";
-  const normalizedLocation = location || "Unknown";
-
-  return {
-    weather: {
-      temp: 26,
-      humidity: 62,
-      description: `Stable conditions expected near ${normalizedLocation}`,
-    },
-    crops: [
-      {
-        crop: "Wheat",
-        est_yield_kg: Math.round(3200 * normalizedArea),
-        notes: `Performs well in ${normalizedSoil} soil with moderate irrigation.`,
-      },
-      {
-        crop: "Maize",
-        est_yield_kg: Math.round(4100 * normalizedArea),
-        notes: "Choose hybrids for higher yield potential.",
-      },
-      {
-        crop: "Pulses",
-        est_yield_kg: Math.round(1400 * normalizedArea),
-        notes: "Improves soil health and fits tighter budgets.",
-      },
-    ],
-    fertilizer_plan: [
-      {
-        crop: "Wheat",
-        fertilizer: "Urea",
-        qty_kg: Math.round(110 * normalizedArea),
-        timing: "Basal + 30 DAS",
-      },
-      {
-        crop: "Maize",
-        fertilizer: "DAP",
-        qty_kg: Math.round(85 * normalizedArea),
-        timing: "Basal application",
-      },
-    ],
-    action_plan: [
-      {
-        crop: "Wheat",
-        plan: [
-          "Test soil pH and organic carbon",
-          "Prepare seedbed with light irrigation",
-          "Apply basal fertilizer before sowing",
-        ],
-      },
-      {
-        crop: "Maize",
-        plan: [
-          "Ensure proper seed spacing",
-          "Weed control at 15 DAS",
-          "Top-dress nitrogen at 30 DAS",
-        ],
-      },
-    ],
-    meta: {
-      soil: normalizedSoil,
-      area: normalizedArea,
-      budget: normalizedBudget,
-      location: normalizedLocation,
-    },
-  };
-};
 
 const buildFertilizerPlan = ({ crop = "Maize", soil = "loamy", area = 1 } = {}) => {
   const normalizedArea = Number.isFinite(Number(area)) && Number(area) > 0 ? Number(area) : 1;
@@ -89,14 +20,17 @@ const buildFertilizerPlan = ({ crop = "Maize", soil = "loamy", area = 1 } = {}) 
   };
 };
 
-// 🔹 Demo Controller
 exports.getDemo = (req, res) => {
   try {
     const demoData = buildRecommendation({
-      soil: "loamy",
-      area: 2,
+      season: "rabi",
+      soilType: "loamy",
+      landSize: 2,
       budget: 8000,
       location: "Patna, IN",
+      temperature: 24,
+      rainfall: 55,
+      irrigation: "moderate",
     });
 
     return successResponse(res, demoData, "Demo generated successfully");
@@ -105,7 +39,6 @@ exports.getDemo = (req, res) => {
   }
 };
 
-// 🔹 Recommend Controller
 exports.postRecommend = (req, res) => {
   try {
     const result = buildRecommendation(req.body);
@@ -115,7 +48,15 @@ exports.postRecommend = (req, res) => {
   }
 };
 
-// 🔹 Fertilizer Controller
+exports.postClassifyCrop = (req, res) => {
+  try {
+    const result = classifyCrops(req.body);
+    return successResponse(res, { crops: result }, "Crop classification completed successfully");
+  } catch (error) {
+    return errorResponse(res, "Crop classification failed");
+  }
+};
+
 exports.postFertilizer = (req, res) => {
   try {
     const result = buildFertilizerPlan(req.body);

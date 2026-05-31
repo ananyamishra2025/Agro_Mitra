@@ -12,18 +12,23 @@ const {
   updatePassword,
 } = require("./auth.controller");
 const { authenticate } = require("../../middlewares/auth.middleware");
+const {
+  validateAuthLogin,
+  validateAuthRegister,
+  validatePasswordReset,
+} = require("../../middlewares/validation.middleware");
 
 const router = express.Router();
 
 router.post("/guest", guestAccess);
-router.post("/register", register);
-router.post("/login", login);
+router.post("/register", validateAuthRegister, register);
+router.post("/login", validateAuthLogin, login);
 router.post("/google", googleAuth);
 router.post("/logout", authenticate, logout);
 router.get("/me", authenticate, me);
 router.put("/profile", authenticate, editProfile);
 router.post("/change-password", authenticate, updatePassword);
 router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", completePasswordReset);
+router.post("/reset-password", validatePasswordReset, completePasswordReset);
 
 module.exports = router;

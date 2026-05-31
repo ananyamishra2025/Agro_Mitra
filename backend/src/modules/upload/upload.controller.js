@@ -19,7 +19,10 @@ exports.uploadImage = async (req, res) => {
     }
 
     const userId = req.user?.id || "demoUser";
-    const prediction = detectDisease(imageFile.originalname);
+    const prediction = detectDisease(imageFile.originalname, {
+      cropName: req.body.cropName || "",
+      symptoms: req.body.symptoms || "",
+    });
     const report = await saveCropDiseaseReport({
       userId,
       cropName: req.body.cropName || "",

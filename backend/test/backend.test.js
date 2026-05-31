@@ -30,6 +30,7 @@ const request = (app, { method = "GET", path = "/", body, headers = {} } = {}) =
           server.close(() => {
             resolve({
               statusCode: res.statusCode,
+              headers: res.headers,
               body: data ? JSON.parse(data) : null
             });
           });
@@ -303,4 +304,85 @@ test("database models are registered for required collections", async () => {
   assert.ok(modelNames.includes("SavedQuery"));
   assert.ok(modelNames.includes("SavedReport"));
   assert.ok(modelNames.includes("ActivityLog"));
+});
+
+test("crop classification returns scored crop matches", async () => {
+  const app = require("../src/app");
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/classify-crop",
+    body: {
+      season: "rabi",
+      soilType: "loamy",
+      temperature: 22,
+      rainfall: 60,
+      irrigation: "moderate",
+    },
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.ok(response.body.data.crops.length > 0);
+  assert.equal(typeof response.body.data.crops[0].confidence, "number");
+});
+
+test("recommendation engine returns crops, fertilizer, and action plan", async () => {
+  const app = require("../src/app");
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/recommend",
+    body: {
+      location: "Kolkata",
+      season: "rabi",
+      soilType: "loamy",
+      landSize: 2,
+      budget: 8000,
+      temperature: 24,
+      rainfall: 55,
+    },
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.ok(response.body.data.recommendedCrops.length > 0);
+  assert.ok(response.body.data.fertilizer_plan.length > 0);
+  assert.ok(response.body.data.actionPlan.length > 0);
+});
+
+test("disease detection model classifies image evidence", () => {
+  const { detectDisease } = require("../src/modules/ai/disease-detection.service");
+  const result = detectDisease({
+    fileName: "tomato_leaf_blight_spot.jpg",
+    cropName: "Tomato",
+    symptoms: "brown spots and yellowing",
+  });
+
+  assert.match(result.disease, /Blight|Spot|Nitrogen/i);
+  assert.ok(result.confidenceScore > 35);
+  assert.ok(result.advice.length > 0);
+});
+
+test("security middleware applies Helmet and rate-limit headers", async () => {
+  const app = require("../src/app");
+  const response = await request(app, { path: "/" });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.headers["x-dns-prefetch-control"], "off");
+  assert.ok(response.headers["ratelimit-limit"]);
+});
+
+test("auth validation rejects weak registration payloads", async () => {
+  const app = require("../src/app");
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/auth/register",
+    body: {
+      name: "A",
+      email: "not-an-email",
+      password: "123",
+    },
+  });
+
+  assert.equal(response.statusCode, 400);
+  assert.equal(response.body.success, false);
 });

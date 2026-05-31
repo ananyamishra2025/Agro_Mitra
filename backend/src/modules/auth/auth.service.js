@@ -8,6 +8,7 @@ const { isDatabaseConnected } = require("../../utils/database");
 
 const JWT_SECRET = () => process.env.JWT_SECRET || "agro-mitra-dev-secret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
+const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS) || 12;
 
 const memoryUsers = [];
 const revokedTokens = new Set();
@@ -23,7 +24,7 @@ const seedAdmin = () => {
     name: "Agro-Mitra Admin",
     email: "admin@agromitra.in",
     phone: "",
-    passwordHash: bcrypt.hashSync("admin123", 10),
+    passwordHash: bcrypt.hashSync("admin123", BCRYPT_ROUNDS),
     provider: "email",
     role: "admin",
     status: "active",
@@ -48,7 +49,7 @@ const ensureAdminUser = async () => {
   await User.create({
     name: "Agro-Mitra Admin",
     email: "admin@agromitra.in",
-    passwordHash: bcrypt.hashSync("admin123", 10),
+    passwordHash: bcrypt.hashSync("admin123", BCRYPT_ROUNDS),
     provider: "email",
     role: "admin",
     status: "active",
@@ -142,7 +143,7 @@ const registerUser = async ({ name, email, phone, password, provider = "email", 
       name,
       email,
       phone,
-      passwordHash: password ? bcrypt.hashSync(password, 10) : null,
+      passwordHash: password ? bcrypt.hashSync(password, BCRYPT_ROUNDS) : null,
       provider,
       role,
       status: "active",
@@ -165,7 +166,7 @@ const registerUser = async ({ name, email, phone, password, provider = "email", 
     name,
     email,
     phone,
-    passwordHash: password ? bcrypt.hashSync(password, 10) : null,
+    passwordHash: password ? bcrypt.hashSync(password, BCRYPT_ROUNDS) : null,
     provider,
     role,
     status: "active",
@@ -291,7 +292,7 @@ const changePassword = async ({ userId, email, phone, currentPassword, newPasswo
     throw new Error("Current password is incorrect");
   }
 
-  user.passwordHash = bcrypt.hashSync(newPassword, 10);
+  user.passwordHash = bcrypt.hashSync(newPassword, BCRYPT_ROUNDS);
   if (isDatabaseConnected()) {
     await user.save();
   } else {
@@ -360,7 +361,7 @@ const resetPassword = async ({ token, newPassword }) => {
 
   if (!user) throw new Error("Account not found");
 
-  user.passwordHash = bcrypt.hashSync(newPassword, 10);
+  user.passwordHash = bcrypt.hashSync(newPassword, BCRYPT_ROUNDS);
   if (isDatabaseConnected()) {
     await user.save();
   } else {

@@ -29,6 +29,7 @@ router.get("/", (req, res) => {
       "POST   /api/auth/reset-password",
       "GET    /api/admin/overview",
       "GET    /api/admin/users",
+      "POST   /api/classify-crop",
       "GET    /api/saved/queries/:userId",
       "POST   /api/saved/queries",
       "GET    /api/saved/reports/:userId",
