@@ -14,9 +14,14 @@ const HistoryPage = () => {
     const fetchHistory = async () => {
       try {
         setLoading(true);
-        const userId = "demo-user";
+        const userId = "demoUser";
         const response = await getHistory(userId);
-        setHistory(response.data || []);
+        const historyItems = Array.isArray(response.data?.history)
+          ? response.data.history
+          : Array.isArray(response.data)
+            ? response.data
+            : [];
+        setHistory(historyItems);
       } catch (error) {
         console.error(error);
       } finally {
@@ -48,9 +53,9 @@ const HistoryPage = () => {
               </span>
               <div>
                 <h2 className="text-2xl font-black text-slate-900">{item.type || "Advisory"}</h2>
-                <p className="mt-2 leading-7 text-slate-600">{item.summary || JSON.stringify(item)}</p>
+                <p className="mt-2 leading-7 text-slate-600">{item.summary || item.output || JSON.stringify(item)}</p>
                 {item.createdAt && (
-                  <p className="mt-3 text-sm font-bold text-slate-400">{new Date(item.createdAt).toLocaleString()}</p>
+                  <p className="mt-3 text-sm font-bold text-slate-400">{item.createdAt}</p>
                 )}
               </div>
             </Card>

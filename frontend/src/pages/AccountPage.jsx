@@ -63,8 +63,9 @@ const AccountPage = () => {
     setFormData((current) => ({ ...current, [field]: event.target.value }));
   };
 
-  const saveUserAndContinue = (user) => {
+  const saveUserAndContinue = ({ user, token }) => {
     localStorage.setItem("agroMitraUser", JSON.stringify(user));
+    localStorage.setItem("agroMitraToken", token);
     setStatus(`${isSignIn ? "Signed in" : "Account created"} successfully. Redirecting...`);
     setTimeout(() => {
       window.location.href = "/dashboard";
@@ -86,7 +87,7 @@ const AccountPage = () => {
             password: formData.password,
           });
 
-      saveUserAndContinue(response.data.user);
+      saveUserAndContinue(response.data);
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Account request failed");
     } finally {
@@ -104,7 +105,7 @@ const AccountPage = () => {
         name: formData.name || "Ananya Mishra",
         email: formData.email || "ananya.mishra@example.com",
       });
-      saveUserAndContinue(response.data.user);
+      saveUserAndContinue(response.data);
     } catch (requestError) {
       setError(requestError.response?.data?.message || "Google sign in failed");
     } finally {

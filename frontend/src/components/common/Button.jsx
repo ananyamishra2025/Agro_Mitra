@@ -4,6 +4,7 @@ const Button = ({
   type = "button",
   variant = "primary",
   className = "",
+  disabled = false,
 }) => {
 
   const styles = {
@@ -21,11 +22,13 @@ const Button = ({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
       className={`
         rounded-xl px-6 py-3
         font-bold
         transition duration-300
         shadow-md hover:-translate-y-0.5 hover:shadow-lg
+        disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:shadow-md
         ${styles[variant]}
         ${className}
       `}

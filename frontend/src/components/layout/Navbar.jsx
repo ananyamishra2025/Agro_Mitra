@@ -1,12 +1,18 @@
 import { Link, useLocation } from "react-router-dom";
-import { Bell, ChevronDown, Leaf, LogIn, Moon, Search, Sun, UserRound } from "lucide-react";
+import { Bell, ChevronDown, Leaf, LogIn, LogOut, Moon, Search, Sun, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
+import { logoutUser } from "../../api/authApi";
 import Button from "../common/Button";
 
 const Navbar = () => {
   const location = useLocation();
   const [darkMode, setDarkMode] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("agroMitraUser") || "null"));
+  }, [location.pathname]);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark-mode", darkMode);
@@ -17,6 +23,18 @@ const Navbar = () => {
     "Weather changed in your area",
     "New learning resource added",
   ];
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch {
+      // Local cleanup still keeps the frontend session consistent if the token expired.
+    } finally {
+      localStorage.removeItem("agroMitraToken");
+      localStorage.removeItem("agroMitraUser");
+      window.location.href = "/account";
+    }
+  };
 
   return (
     <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 shadow-sm backdrop-blur-md">
@@ -94,20 +112,32 @@ const Navbar = () => {
             Contact
           </Link>
 
-          <Button onClick={() => { window.location.href = "/account"; }}>
-            <span className="inline-flex items-center gap-2">
-              <LogIn size={18} />
-              Sign In / Sign Up
-            </span>
-          </Button>
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="hidden rounded-xl border border-slate-200 bg-white px-4 py-3 font-black text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50 lg:inline-flex"
+            >
+              <span className="inline-flex items-center gap-2">
+                <LogOut size={18} />
+                Logout
+              </span>
+            </button>
+          ) : (
+            <Button onClick={() => { window.location.href = "/account"; }}>
+              <span className="inline-flex items-center gap-2">
+                <LogIn size={18} />
+                Sign In / Sign Up
+              </span>
+            </Button>
+          )}
 
           <Link to="/profile" className="hidden items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-[0_8px_24px_rgba(15,23,42,0.06)] 2xl:flex">
             <span className="grid h-10 w-10 place-items-center rounded-full bg-emerald-50 text-emerald-700">
               <UserRound size={20} />
             </span>
             <div>
-              <p className="text-sm font-black text-slate-900">Ananya Mishra</p>
-              <p className="text-xs font-medium text-slate-500">Farmer</p>
+              <p className="text-sm font-black text-slate-900">{user?.name || "Guest User"}</p>
+              <p className="text-xs font-medium text-slate-500">{user?.role || "Sign in"}</p>
             </div>
             <ChevronDown size={18} className="text-slate-500" />
           </Link>

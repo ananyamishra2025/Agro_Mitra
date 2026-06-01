@@ -19,3 +19,18 @@ export const changePassword = async (payload) => {
   const response = await axiosInstance.post("/api/auth/change-password", payload);
   return response.data;
 };
+
+export const getCurrentUser = async () => {
+  const response = await axiosInstance.get("/api/auth/me");
+  return response.data;
+};
+
+export const updateProfile = async (payload) => {
+  const response = await axiosInstance.put("/api/auth/profile", payload);
+  return response.data;
+};
+
+export const logoutUser = async () => {
+  const response = await axiosInstance.post("/api/auth/logout", {});
+  return response.data;
+};

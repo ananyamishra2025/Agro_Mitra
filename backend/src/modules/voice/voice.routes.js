@@ -8,8 +8,8 @@ const upload = multer({ dest: "uploads/audio/" });
 
 router.post(
   "/ask",
-  validateVoice,
   upload.single("audio"),
+  validateVoice,
   processVoiceQuestion
 );
 

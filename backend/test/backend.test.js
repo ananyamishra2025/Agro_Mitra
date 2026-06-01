@@ -50,6 +50,77 @@ const request = (app, { method = "GET", path = "/", body, headers = {} } = {}) =
   });
 });
 
+const multipartRequest = (
+  app,
+  {
+    path,
+    fields = {},
+    fileField,
+    fileName,
+    fileContent,
+    mimeType = "application/octet-stream",
+  }
+) => new Promise((resolve, reject) => {
+  const boundary = `----agromitra-test-${Date.now()}`;
+  const chunks = [];
+
+  Object.entries(fields).forEach(([name, value]) => {
+    chunks.push(Buffer.from(`--${boundary}\r\n`));
+    chunks.push(Buffer.from(`Content-Disposition: form-data; name="${name}"\r\n\r\n`));
+    chunks.push(Buffer.from(`${value}\r\n`));
+  });
+
+  if (fileField) {
+    chunks.push(Buffer.from(`--${boundary}\r\n`));
+    chunks.push(Buffer.from(
+      `Content-Disposition: form-data; name="${fileField}"; filename="${fileName}"\r\n`
+    ));
+    chunks.push(Buffer.from(`Content-Type: ${mimeType}\r\n\r\n`));
+    chunks.push(Buffer.isBuffer(fileContent) ? fileContent : Buffer.from(fileContent || ""));
+    chunks.push(Buffer.from("\r\n"));
+  }
+
+  chunks.push(Buffer.from(`--${boundary}--\r\n`));
+  const payload = Buffer.concat(chunks);
+
+  const server = app.listen(0, () => {
+    const { port } = server.address();
+    const req = http.request(
+      {
+        hostname: "127.0.0.1",
+        port,
+        path,
+        method: "POST",
+        headers: {
+          "Content-Type": `multipart/form-data; boundary=${boundary}`,
+          "Content-Length": payload.length,
+        },
+      },
+      (res) => {
+        let data = "";
+        res.setEncoding("utf8");
+        res.on("data", chunk => { data += chunk; });
+        res.on("end", () => {
+          server.close(() => {
+            resolve({
+              statusCode: res.statusCode,
+              headers: res.headers,
+              body: data ? JSON.parse(data) : null,
+            });
+          });
+        });
+      }
+    );
+
+    req.on("error", (error) => {
+      server.close(() => reject(error));
+    });
+
+    req.write(payload);
+    req.end();
+  });
+});
+
 test("app imports and serves health check without optional API keys", async () => {
   delete process.env.GROQ_API_KEY;
   delete process.env.OPENWEATHER_API_KEY;
@@ -216,6 +287,63 @@ test("auth profile and logout use JWT", async () => {
   assert.equal(afterLogout.statusCode, 401);
 });
 
+test("profile endpoint supports fetching and editing authenticated user profile", async () => {
+  const app = require("../src/app");
+  const registered = await request(app, {
+    method: "POST",
+    path: "/api/auth/register",
+    body: {
+      name: "Editable Profile",
+      email: "editable-profile@example.com",
+      password: "secret123",
+    },
+  });
+
+  const token = registered.body.data.token;
+  const updated = await request(app, {
+    method: "PUT",
+    path: "/api/auth/profile",
+    headers: { Authorization: `Bearer ${token}` },
+    body: {
+      name: "Ananya Mishra",
+      phone: "9876543210",
+      profile: {
+        location: "Kolkata, West Bengal",
+        farmType: "Vegetable farm",
+        preferredLanguage: "English",
+      },
+    },
+  });
+
+  assert.equal(updated.statusCode, 200);
+  assert.equal(updated.body.success, true);
+  assert.equal(updated.body.data.user.name, "Ananya Mishra");
+  assert.equal(updated.body.data.user.profile.location, "Kolkata, West Bengal");
+
+  const profile = await request(app, {
+    path: "/api/auth/me",
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  assert.equal(profile.statusCode, 200);
+  assert.equal(profile.body.data.user.phone, "9876543210");
+});
+
+test("JWT middleware rejects missing and malformed tokens", async () => {
+  const app = require("../src/app");
+
+  const missing = await request(app, { path: "/api/auth/me" });
+  assert.equal(missing.statusCode, 401);
+  assert.equal(missing.body.success, false);
+
+  const malformed = await request(app, {
+    path: "/api/auth/me",
+    headers: { Authorization: "Bearer not-a-real-token" },
+  });
+  assert.equal(malformed.statusCode, 401);
+  assert.equal(malformed.body.success, false);
+});
+
 test("password reset flow updates password", async () => {
   const app = require("../src/app");
   await request(app, {
@@ -306,6 +434,51 @@ test("database models are registered for required collections", async () => {
   assert.ok(modelNames.includes("ActivityLog"));
 });
 
+test("database-backed services fall back safely when MongoDB is disconnected", async () => {
+  const mongoose = require("mongoose");
+  const { createContactEnquiry, listContactEnquiries } = require("../src/modules/contact/contact.service");
+  const { logActivity, listActivities } = require("../src/modules/activity/activity.service");
+  const { saveQuery, listSavedQueries, saveReport, listSavedReports } = require("../src/modules/saved/saved.service");
+
+  assert.notEqual(mongoose.connection.readyState, 1);
+
+  const contact = await createContactEnquiry({
+    name: "Database Test",
+    contact: "db-test@example.com",
+    message: "Testing fallback persistence",
+  });
+  assert.equal(contact.status, "new");
+
+  const activity = await logActivity({
+    userId: "databaseTestUser",
+    action: "test_activity",
+    message: "Database fallback activity",
+  });
+  assert.equal(activity.userId, "databaseTestUser");
+
+  const query = await saveQuery({
+    userId: "databaseTestUser",
+    feature: "chatbot",
+    title: "Saved test query",
+    query: { question: "Best crop?" },
+    result: { answer: "Wheat" },
+  });
+  assert.equal(query.feature, "chatbot");
+
+  const report = await saveReport({
+    userId: "databaseTestUser",
+    reportType: "crop_advisory",
+    title: "Saved test report",
+    data: { crop: "Wheat" },
+  });
+  assert.equal(report.reportType, "crop_advisory");
+
+  assert.ok((await listContactEnquiries()).length >= 1);
+  assert.equal((await listActivities("databaseTestUser")).length, 1);
+  assert.equal((await listSavedQueries("databaseTestUser")).length, 1);
+  assert.equal((await listSavedReports("databaseTestUser")).length, 1);
+});
+
 test("crop classification returns scored crop matches", async () => {
   const app = require("../src/app");
   const response = await request(app, {
@@ -360,6 +533,65 @@ test("disease detection model classifies image evidence", () => {
   assert.match(result.disease, /Blight|Spot|Nitrogen/i);
   assert.ok(result.confidenceScore > 35);
   assert.ok(result.advice.length > 0);
+});
+
+test("upload image route processes crop disease reports", async () => {
+  const app = require("../src/app");
+  const pngHeader = Buffer.from([
+    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
+    0x00, 0x00, 0x00, 0x0d,
+  ]);
+
+  const response = await multipartRequest(app, {
+    path: "/api/upload/image",
+    fields: {
+      cropName: "Tomato",
+      symptoms: "brown spot and blight",
+    },
+    fileField: "image",
+    fileName: "tomato_blight_spot.png",
+    fileContent: pngHeader,
+    mimeType: "image/png",
+  });
+
+  assert.equal(response.statusCode, 200);
+  assert.equal(response.body.success, true);
+  assert.ok(response.body.data.prediction.disease);
+  assert.ok(response.body.data.report.id);
+});
+
+test("upload image route rejects missing image file", async () => {
+  const app = require("../src/app");
+  const response = await request(app, {
+    method: "POST",
+    path: "/api/upload/image",
+    body: { cropName: "Tomato" },
+  });
+
+  assert.equal(response.statusCode, 400);
+  assert.equal(response.body.success, false);
+});
+
+test("voice route validates language and requires audio file", async () => {
+  const app = require("../src/app");
+
+  const invalidLanguage = await request(app, {
+    method: "POST",
+    path: "/api/voice/ask",
+    body: { language: "fr-FR" },
+  });
+
+  assert.equal(invalidLanguage.statusCode, 400);
+  assert.equal(invalidLanguage.body.success, false);
+
+  const missingAudio = await request(app, {
+    method: "POST",
+    path: "/api/voice/ask",
+    body: { language: "hi-IN" },
+  });
+
+  assert.equal(missingAudio.statusCode, 400);
+  assert.equal(missingAudio.body.success, false);
 });
 
 test("security middleware applies Helmet and rate-limit headers", async () => {

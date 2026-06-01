@@ -1,4 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import {
   LayoutDashboard,
@@ -18,6 +19,11 @@ import {
 
 const Sidebar = () => {
   const location = useLocation();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("agroMitraUser") || "null"));
+  }, [location.pathname]);
 
   const menuItems = [
     {
@@ -129,8 +135,8 @@ const Sidebar = () => {
               A
             </span>
             <div>
-              <h3 className="font-black text-white">Ananya Mishra</h3>
-              <p className="text-xs font-semibold text-green-100">Farmer / Student</p>
+              <h3 className="font-black text-white">{user?.name || "Guest User"}</h3>
+              <p className="text-xs font-semibold text-green-100">{user?.role || "Farmer / Student"}</p>
             </div>
           </div>
           <p className="mt-3 flex items-center gap-2 text-xs font-bold text-lime-100">
