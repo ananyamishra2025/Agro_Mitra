@@ -4,6 +4,37 @@ const { processQuestion } = require("../chatbot/chatbot.service");
 const { saveHistory } = require("../history/history.service");
 const { successResponse, errorResponse } = require("../../utils/response");
 
+const limitSpeechAnswer = (answer) => {
+  if (answer.length <= 900) return answer;
+
+  const sentences = answer
+    .split(/(?<=[।.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+
+  if (sentences.length > 1) {
+    return sentences.slice(0, 7).join(" ");
+  }
+
+  return `${answer.slice(0, 900).trim()}...`;
+};
+
+const makeSpeechFriendlyAnswer = (answer = "") =>
+  limitSpeechAnswer(String(answer)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/^\s{0,3}#{1,6}\s*/gm, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^\s*\|?[-:\s|]{4,}\|?\s*$/gm, "")
+    .replace(/^\s*\|/gm, "")
+    .replace(/\|\s*$/gm, "")
+    .replace(/\s*\|\s*/g, ". ")
+    .replace(/^\s*[-*]\s+/gm, "")
+    .replace(/\n{2,}/g, ". ")
+    .replace(/\s{2,}/g, " ")
+    .trim());
+
 const processVoiceQuestion = async (req, res) => {
   const audioFile = req.file;
 
@@ -13,6 +44,7 @@ const processVoiceQuestion = async (req, res) => {
 
     if (textQuestion && typeof textQuestion === "string") {
       const textAnswer = await processQuestion(textQuestion);
+      const speechAnswer = makeSpeechFriendlyAnswer(textAnswer);
 
       try {
         await saveHistory({
@@ -31,6 +63,7 @@ const processVoiceQuestion = async (req, res) => {
         {
           textQuestion,
           textAnswer,
+          speechAnswer,
           audioAnswerUrl: null,
         },
         "Voice transcript response generated successfully"
@@ -63,6 +96,7 @@ const processVoiceQuestion = async (req, res) => {
       {
         textQuestion: result.textQuestion,
         textAnswer: result.textAnswer,
+        speechAnswer: result.speechAnswer || makeSpeechFriendlyAnswer(result.textAnswer),
         audioAnswerUrl: result.audioAnswerUrl,
       },
       "Voice response generated successfully"

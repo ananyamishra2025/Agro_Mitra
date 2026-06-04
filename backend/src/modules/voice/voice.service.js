@@ -24,6 +24,37 @@ const getTextToSpeechClient = () => {
 };
 
 // 🔹 Configure Speech Recognition
+const limitSpeechAnswer = (answer) => {
+  if (answer.length <= 900) return answer;
+
+  const sentences = answer
+    .split(/(?<=[।.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter(Boolean);
+
+  if (sentences.length > 1) {
+    return sentences.slice(0, 7).join(" ");
+  }
+
+  return `${answer.slice(0, 900).trim()}...`;
+};
+
+const makeSpeechFriendlyAnswer = (answer = "") =>
+  limitSpeechAnswer(String(answer)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/^\s{0,3}#{1,6}\s*/gm, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^\s*\|?[-:\s|]{4,}\|?\s*$/gm, "")
+    .replace(/^\s*\|/gm, "")
+    .replace(/\|\s*$/gm, "")
+    .replace(/\s*\|\s*/g, ". ")
+    .replace(/^\s*[-*]\s+/gm, "")
+    .replace(/\n{2,}/g, ". ")
+    .replace(/\s{2,}/g, " ")
+    .trim());
+
 const resolveSpeechConfig = (mimeType, language) => {
   const config = {
     languageCode: language,
@@ -75,10 +106,11 @@ const handleVoiceInput = async (
 
     // 2️⃣ Text → Chatbot
     const textAnswer = await processQuestion(textQuestion);
+    const speechAnswer = makeSpeechFriendlyAnswer(textAnswer);
 
     // 3️⃣ Text → Speech
     const ttsRequest = {
-      input: { text: textAnswer },
+      input: { text: speechAnswer },
       voice: {
         languageCode: language,
         ssmlGender: "NEUTRAL"
@@ -102,6 +134,7 @@ const handleVoiceInput = async (
     return {
       textQuestion,
       textAnswer,
+      speechAnswer,
       audioAnswerUrl: `/uploads/audio/${fileName}`
     };
 
@@ -111,4 +144,4 @@ const handleVoiceInput = async (
   }
 };
 
-module.exports = { handleVoiceInput };
+module.exports = { handleVoiceInput, makeSpeechFriendlyAnswer };

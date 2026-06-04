@@ -4,6 +4,7 @@ import Card from "../components/common/Card";
 import Button from "../components/common/Button";
 import { askChatbot } from "../api/chatbotApi";
 import BackButton from "../components/common/BackButton";
+import MessageBubble from "../components/chatbot/MessageBubble";
 
 const ChatbotPage = () => {
   const [messages, setMessages] = useState([
@@ -108,20 +109,7 @@ const ChatbotPage = () => {
           <div className="h-[32rem] overflow-y-auto p-6">
             <div className="space-y-5">
               {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-3xl px-5 py-4 leading-7 shadow-md transition-all ${
-                      msg.sender === "user"
-                        ? "rounded-br-md bg-green-700 text-white"
-                        : "rounded-bl-md border border-slate-200 bg-white text-slate-700"
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
+                <MessageBubble key={index} sender={msg.sender} text={msg.text} />
               ))}
 
               {loading && (

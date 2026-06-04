@@ -1,5 +1,4 @@
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 import {
   LayoutDashboard,
@@ -17,13 +16,17 @@ import {
   Circle,
 } from "lucide-react";
 
+const getStoredUser = () => {
+  try {
+    return JSON.parse(localStorage.getItem("agroMitraUser") || "null");
+  } catch {
+    return null;
+  }
+};
+
 const Sidebar = () => {
   const location = useLocation();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("agroMitraUser") || "null"));
-  }, [location.pathname]);
+  const user = getStoredUser();
 
   const menuItems = [
     {
