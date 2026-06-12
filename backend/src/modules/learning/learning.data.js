@@ -1,24 +1,183 @@
 const learningResources = [
   {
-    title: "ICAR Official Website",
+    title: "Crop Production Guide: Agriculture",
     type: "document",
-    link: "https://icar.org.in"
+    category: "Crop Production",
+    publisher: "Tamil Nadu Agricultural University",
+    year: 2020,
+    format: "PDF",
+    description:
+      "A comprehensive crop production reference covering rice, millets, maize, wheat, pulses, oilseeds, cotton, sugar crops, and crop management practices.",
+    link: "https://agritech.tnau.ac.in/pdf/AGRICULTURE.pdf",
+    tags: ["crop production", "agronomy", "field crops", "students"],
+    featured: true,
   },
   {
-    title: "Soil Health Management Guide",
+    title: "Crop Production Guide: Horticulture",
     type: "document",
-    link: "https://agricoop.nic.in"
+    category: "Horticulture",
+    publisher: "Tamil Nadu Agricultural University",
+    year: 2020,
+    format: "PDF",
+    description:
+      "Production technologies for fruits, vegetables, spices, plantation crops, medicinal plants, flowers, and farm mechanization.",
+    link: "https://agritech.tnau.ac.in/pdf/HORTICULTURE.pdf",
+    tags: ["horticulture", "vegetables", "fruits", "production guide"],
+    featured: true,
   },
   {
-    title: "Organic Farming Explained",
-    type: "video",
-    link: "https://www.youtube.com/watch?v=whOrC1iKxyA"
+    title: "Technical Guidelines on Soils for Nutrition",
+    type: "document",
+    category: "Soil Science",
+    publisher: "Food and Agriculture Organization",
+    year: 2023,
+    format: "PDF",
+    description:
+      "Technical guidance linking soil health, nutrient management, food quality, and human nutrition for researchers and advanced students.",
+    link: "https://openknowledge.fao.org/server/api/core/bitstreams/daf25621-7a13-461e-9fe5-bdaf6b04ac6a/content",
+    tags: ["soil health", "nutrition", "fertility", "research"],
+    featured: true,
   },
   {
-    title: "Modern Agriculture Techniques",
-    type: "video",
-    link: "https://www.youtube.com/watch?v=example"
-  }
+    title: "The Importance of Soil Organic Matter",
+    type: "document",
+    category: "Soil Science",
+    publisher: "Food and Agriculture Organization",
+    year: 2005,
+    format: "PDF",
+    description:
+      "A practical scientific guide to soil organic matter, soil restoration, nutrient cycling, moisture retention, and conservation agriculture.",
+    link: "https://www.fao.org/4/a0100e/a0100e.pdf",
+    tags: ["soil organic matter", "conservation", "soil fertility"],
+  },
+  {
+    title: "National Programme for Organic Production",
+    type: "document",
+    category: "Organic Farming",
+    publisher: "APEDA, Government of India",
+    year: 2024,
+    format: "PDF",
+    description:
+      "The Indian standards and procedures for organic production, accreditation, certification, labeling, and trade.",
+    link: "https://agritech.tnau.ac.in/org_farm/pdf/NPOP%208th%20Edition%20.pdf",
+    tags: ["organic farming", "certification", "standards", "India"],
+  },
+  {
+    title: "Rabi Agro-Advisory for Farmers",
+    type: "document",
+    category: "Crop Advisory",
+    publisher: "Indian Council of Agricultural Research",
+    year: 2021,
+    format: "PDF",
+    description:
+      "ICAR recommendations for Rabi crop planning, seed treatment, nutrient management, irrigation, pest management, and livestock care.",
+    link: "https://icar.gov.in/sites/default/files/2022-09/Rabi-Agro-Advisory-2021-22_0.pdf",
+    tags: ["rabi", "crop advisory", "ICAR", "farm management"],
+  },
+  {
+    title: "Farmer Friendly Handbook",
+    type: "document",
+    category: "Farm Management",
+    publisher: "Government of India",
+    year: 2014,
+    format: "PDF",
+    description:
+      "A broad reference covering soil health, fertilizers, seeds, irrigation, crop protection, credit, insurance, marketing, and extension services.",
+    link: "https://agritech.tnau.ac.in/pdf/2014/Farmer%20Friendly_English_2014.pdf",
+    tags: ["farm management", "schemes", "irrigation", "crop protection"],
+  },
+  {
+    title: "Environmental and Health Impacts of Pesticides and Fertilizers",
+    type: "document",
+    category: "Plant Protection",
+    publisher: "FAO and UNEP",
+    year: 2022,
+    format: "PDF",
+    description:
+      "A scientific assessment of pesticide and fertilizer risks, environmental pathways, human health impacts, and safer management approaches.",
+    link: "https://www.fao.org/fileadmin/user_upload/soils/publications/pesticides.pdf",
+    tags: ["pesticides", "fertilizers", "environment", "safety"],
+  },
+  {
+    title: "Indian Agriculture after Independence",
+    type: "document",
+    category: "Agricultural Development",
+    publisher: "Indian Council of Agricultural Research",
+    year: 2022,
+    format: "PDF",
+    description:
+      "An ICAR reference on the development of Indian field crops, horticulture, livestock, fisheries, natural resources, education, and extension.",
+    link: "https://www.icar.gov.in/sites/default/files/2022-12/Indian-Agriculture-after-Independence.pdf",
+    tags: ["Indian agriculture", "history", "development", "ICAR"],
+  },
+  {
+    title: "Indian Agricultural Research Journals",
+    type: "journal",
+    category: "Research",
+    publisher: "Indian Council of Agricultural Research",
+    format: "Open-access portal",
+    description:
+      "Browse and read ICAR-hosted open-access journals covering agronomy, horticulture, soil science, plant protection, engineering, economics, and animal sciences.",
+    link: "https://epubs.icar.org.in/",
+    tags: ["journals", "research papers", "open access", "ICAR"],
+    featured: true,
+  },
+  {
+    title: "The Indian Journal of Agricultural Sciences",
+    type: "journal",
+    category: "Research",
+    publisher: "Indian Council of Agricultural Research",
+    format: "Open-access journal",
+    description:
+      "Peer-reviewed experimental research in agronomy, genetics, breeding, soil science, horticulture, water management, plant diseases, engineering, and economics.",
+    link: "https://epubs.icar.org.in/index.php/IJAgS/issue/archive",
+    tags: ["journal", "peer reviewed", "agricultural science", "research"],
+  },
+  {
+    title: "FAO AGRIS Research Database",
+    type: "repository",
+    category: "Research",
+    publisher: "Food and Agriculture Organization",
+    format: "Research database",
+    description:
+      "Search millions of journal articles, books, conference papers, technical reports, datasets, theses, and other agricultural research records.",
+    link: "https://agris.fao.org/adv-search/en",
+    tags: ["literature search", "research database", "FAO", "bibliography"],
+    featured: true,
+  },
+  {
+    title: "Krishikosh Agricultural Thesis Repository",
+    type: "repository",
+    category: "Research",
+    publisher: "ICAR-IARI",
+    format: "Digital repository",
+    description:
+      "An open repository of Indian agricultural university theses and research produced across the National Agricultural Research and Education System.",
+    link: "https://krishikosh.egranth.ac.in/",
+    tags: ["theses", "dissertations", "Indian research", "repository"],
+  },
+  {
+    title: "ICAR Books and E-books",
+    type: "repository",
+    category: "Reference",
+    publisher: "Indian Council of Agricultural Research",
+    format: "Publication library",
+    description:
+      "Access ICAR books, reports, manuals, policy documents, agricultural achievements, and downloadable reference publications.",
+    link: "https://www.icar.gov.in/en/e-books",
+    tags: ["books", "manuals", "reports", "ICAR"],
+  },
+  {
+    title: "TNAU Agritech Knowledge Portal",
+    type: "guide",
+    category: "Reference",
+    publisher: "Tamil Nadu Agricultural University",
+    format: "Knowledge portal",
+    description:
+      "A practical portal for crop production, protection, biotechnology, post-harvest technology, agricultural engineering, and extension information.",
+    link: "https://agritech.tnau.ac.in/",
+    tags: ["crop guide", "technology", "extension", "TNAU"],
+  },
 ];
 
 module.exports = { learningResources };

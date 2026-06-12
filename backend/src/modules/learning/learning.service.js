@@ -10,6 +10,10 @@ const normalizeResource = (resource) => ({
   description: resource.description || "",
   link: resource.link,
   tags: resource.tags || [],
+  publisher: resource.publisher || "",
+  year: resource.year,
+  format: resource.format || "",
+  featured: resource.featured ?? false,
   isPublished: resource.isPublished ?? true,
   createdAt: resource.createdAt,
 });
@@ -17,18 +21,27 @@ const normalizeResource = (resource) => ({
 const getLearningResources = async () => {
   if (!isDatabaseConnected()) return learningResources;
 
-  const count = await LearningResource.countDocuments();
-  if (count === 0) {
-    await LearningResource.insertMany(
-      learningResources.map((resource) => ({
-        ...resource,
-        category: resource.category || "General",
-        isPublished: true,
-      }))
-    );
-  }
+  await LearningResource.bulkWrite(
+    learningResources.map((resource) => ({
+      updateOne: {
+        filter: { link: resource.link },
+        update: {
+          $set: {
+            ...resource,
+            category: resource.category || "General",
+            isPublished: true,
+          },
+        },
+        upsert: true,
+      },
+    }))
+  );
 
-  const rows = await LearningResource.find({ isPublished: true }).sort({ createdAt: -1 });
+  const curatedLinks = learningResources.map((resource) => resource.link);
+  const rows = await LearningResource.find({
+    isPublished: true,
+    link: { $in: curatedLinks },
+  }).sort({ featured: -1, category: 1, title: 1 });
   return rows.map(normalizeResource);
 };
 

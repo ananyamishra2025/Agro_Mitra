@@ -9,7 +9,7 @@ const learningResourceSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["article", "document", "video", "guide"],
+      enum: ["article", "document", "video", "guide", "journal", "repository"],
       default: "article",
     },
     category: {
@@ -31,6 +31,23 @@ const learningResourceSchema = new mongoose.Schema(
     tags: {
       type: [String],
       default: [],
+    },
+    publisher: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    year: {
+      type: Number,
+    },
+    format: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    featured: {
+      type: Boolean,
+      default: false,
     },
     isPublished: {
       type: Boolean,
