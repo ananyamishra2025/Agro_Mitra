@@ -1,23 +1,246 @@
 const gardeningTips = [
   {
-    title: "Home Vegetable Gardening",
-    tips: [
-      "Choose sunlight-rich area (6–8 hours sunlight)",
-      "Use organic compost",
-      "Water early morning",
-      "Avoid overwatering",
-      "Rotate crops every season"
-    ]
+    id: "daily-inspection",
+    title: "Daily Plant Health Inspection",
+    category: "Daily Care",
+    audience: ["Gardeners", "Farmers", "Students"],
+    duration: "10-15 minutes",
+    description:
+      "Inspect leaves, stems, flowers, and soil every day so pests, diseases, water stress, and nutrient problems are noticed early.",
+    tasks: [
+      "Check both sides of leaves for eggs, insects, spots, or powdery growth.",
+      "Remove fallen or badly infected plant material from the growing area.",
+      "Record unusual symptoms and photograph changes for comparison.",
+    ],
+    source: "University of Minnesota Extension",
+    format: "Online guide",
+    link: "https://extension.umn.edu/yard-and-garden/yard-and-garden-news",
+    featured: true,
   },
   {
-    title: "Balcony Gardening",
-    tips: [
-      "Use good quality potting mix",
-      "Select small root crops",
-      "Ensure drainage holes",
-      "Use vertical space efficiently"
-    ]
-  }
+    id: "watering",
+    title: "Smart Watering for Vegetable Gardens",
+    category: "Watering",
+    audience: ["Gardeners", "Farmers"],
+    duration: "Morning task",
+    description:
+      "Water deeply near the root zone according to soil moisture instead of following a fixed daily schedule.",
+    tasks: [
+      "Push a finger 3-5 cm into the soil and water only when it feels dry.",
+      "Water early in the morning and keep foliage dry where possible.",
+      "Apply water slowly so it reaches roots without running off.",
+    ],
+    source: "University of Minnesota Extension",
+    format: "Vegetable gardening guide",
+    link: "https://extension.umn.edu/yard-and-garden/vegetables",
+    featured: true,
+  },
+  {
+    id: "compost",
+    title: "Build and Maintain Garden Compost",
+    category: "Soil & Compost",
+    audience: ["Gardeners", "Students", "Farmers"],
+    duration: "Weekly check",
+    description:
+      "Convert suitable garden and kitchen materials into stable organic matter for healthier soil and improved water retention.",
+    tasks: [
+      "Layer dry brown material with fresh green material.",
+      "Keep the pile moist like a squeezed sponge, but never waterlogged.",
+      "Do not compost meat, dairy, pet waste, or heavily diseased plants.",
+    ],
+    source: "University of Minnesota Extension",
+    format: "Online guide",
+    link: "https://extension.umn.edu/managing-soil-and-nutrients/composting-home-gardens",
+    featured: true,
+  },
+  {
+    id: "home-vegetable-manual",
+    title: "A Vegetable Garden for All",
+    category: "Kitchen Garden",
+    audience: ["Students", "Gardeners", "Farmers"],
+    duration: "Reference manual",
+    description:
+      "A complete FAO manual for planning, establishing, maintaining, harvesting, and using a nutritious family vegetable garden.",
+    tasks: [
+      "Plan crops according to family needs and available space.",
+      "Prepare beds with drainage, organic matter, and access paths.",
+      "Stagger sowing dates to produce vegetables over a longer period.",
+    ],
+    source: "Food and Agriculture Organization",
+    format: "PDF manual",
+    link: "https://www.fao.org/4/i3556e/i3556e.pdf",
+    featured: true,
+  },
+  {
+    id: "raised-beds",
+    title: "Raised Bed Garden Planning",
+    category: "Garden Setup",
+    audience: ["Gardeners", "Students"],
+    duration: "Project guide",
+    description:
+      "Design manageable raised beds with suitable soil, drainage, access, and crop spacing.",
+    tasks: [
+      "Keep beds narrow enough to reach the center without stepping on soil.",
+      "Use loam or sandy-loam topsoil with a moderate amount of compost.",
+      "Check drainage and refill settled soil before each planting cycle.",
+    ],
+    source: "University of Minnesota Extension",
+    format: "Online guide",
+    link: "https://extension.umn.edu/planting-and-growing-guides/raised-bed-gardens",
+  },
+  {
+    id: "weed-control",
+    title: "Safe Weed Control in Home Gardens",
+    category: "Weed Management",
+    audience: ["Gardeners", "Students", "Farmers"],
+    duration: "15-20 minutes",
+    description:
+      "Control weeds early through shallow cultivation, mulching, hand removal, and prevention before they compete or produce seed.",
+    tasks: [
+      "Remove small weeds before their roots become established.",
+      "Apply clean mulch while keeping it away from plant stems.",
+      "Do not allow mature weeds to flower and set seed.",
+    ],
+    source: "University of Minnesota Extension",
+    format: "Online guide",
+    link: "https://extension.umn.edu/planting-and-growing-guides/controlling-weeds-home-gardens",
+  },
+  {
+    id: "crop-rotation",
+    title: "Crop Rotation and Garden Hygiene",
+    category: "Crop Planning",
+    audience: ["Gardeners", "Farmers", "Students"],
+    duration: "Seasonal plan",
+    description:
+      "Rotate crop families and clean garden residues to reduce recurring soil-borne pests and diseases.",
+    tasks: [
+      "Avoid planting the same crop family in the same bed in consecutive seasons.",
+      "Follow legumes with leafy or fruiting vegetables where practical.",
+      "Clean tools and remove diseased residues before planting again.",
+    ],
+    source: "Food and Agriculture Organization",
+    format: "PDF brochure",
+    link: "https://www.fao.org/fileadmin/user_upload/AGRO_Noticias/docs/Eat%20Jamaican%20BACKYARD%20gardening%20tips%20brochure.pdf",
+  },
+  {
+    id: "integrated-pest-management",
+    title: "Integrated Pest Management Basics",
+    category: "Pest Management",
+    audience: ["Students", "Farmers", "Gardeners"],
+    duration: "Study and field guide",
+    description:
+      "Use monitoring, sanitation, physical controls, beneficial organisms, and carefully selected treatments instead of routine pesticide spraying.",
+    tasks: [
+      "Identify the pest correctly before choosing a control method.",
+      "Start with hand removal, traps, barriers, or water sprays.",
+      "Use pesticides only when necessary and always follow the product label.",
+    ],
+    source: "FAO Home Garden Technology Leaflets",
+    format: "Online technical leaflets",
+    link: "https://www.fao.org/4/v5290e/v5290e04.htm",
+  },
+  {
+    id: "mealybug",
+    title: "Mealybug Identification and Management",
+    category: "Pest Management",
+    audience: ["Farmers", "Students", "Gardeners"],
+    duration: "Technical bulletin",
+    description:
+      "Learn how to identify mealybugs, monitor infestation, protect natural enemies, and manage small or severe outbreaks.",
+    tasks: [
+      "Inspect leaf joints, tender shoots, and hidden plant parts.",
+      "For light infestations, remove insects manually or use a strong water jet.",
+      "Control ants that protect mealybugs and avoid unnecessary broad-spectrum sprays.",
+    ],
+    source: "University of California Statewide IPM Program",
+    format: "Online pest guide",
+    link: "https://ipm.ucanr.edu/home-and-landscape/mealybugs/",
+  },
+  {
+    id: "balcony-containers",
+    title: "Balcony and Container Garden Care",
+    category: "Container Garden",
+    audience: ["Urban Gardeners", "Students"],
+    duration: "Daily and weekly care",
+    description:
+      "Manage sunlight, drainage, pot size, growing media, feeding, and vertical space in compact urban gardens.",
+    tasks: [
+      "Use containers with unobstructed drainage holes.",
+      "Group plants by similar sunlight and watering requirements.",
+      "Check pots more frequently because container soil dries quickly.",
+    ],
+    source: "FAO Home Garden Technology Leaflets",
+    format: "Online technical leaflets",
+    link: "https://www.fao.org/4/v5290e/v5290e04.htm",
+  },
+  {
+    id: "school-garden",
+    title: "Setting Up and Running a School Garden",
+    category: "Education",
+    audience: ["Students", "Teachers", "Researchers"],
+    duration: "Project manual",
+    description:
+      "A detailed guide for planning educational gardens, organizing participation, growing food, harvesting, preserving, and connecting gardening with lessons.",
+    tasks: [
+      "Define learning goals before selecting crops and garden activities.",
+      "Assign recurring observation, watering, composting, and record-keeping roles.",
+      "Use harvest and growth records for science and nutrition learning.",
+    ],
+    source: "Food and Agriculture Organization",
+    format: "PDF manual",
+    link: "https://openknowledge.fao.org/bitstreams/0c8a12cd-a161-4ff1-879d-08b3efa6bb8a/download",
+  },
+  {
+    id: "market-vegetables",
+    title: "Growing Vegetables for Home and Market",
+    category: "Production & Marketing",
+    audience: ["Farmers", "Students", "Researchers"],
+    duration: "Reference booklet",
+    description:
+      "A practical FAO reference on vegetable production, crop choice, protected cultivation, food safety, post-harvest handling, and marketing.",
+    tasks: [
+      "Match vegetable choice to climate, market, labor, and water availability.",
+      "Plan harvest handling before production begins.",
+      "Track input costs, yield, quality, and selling price.",
+    ],
+    source: "Food and Agriculture Organization",
+    format: "PDF booklet",
+    link: "https://www.fao.org/4/i0526e/i0526e.pdf",
+  },
+  {
+    id: "organic-manual",
+    title: "Training Manual for Organic Agriculture",
+    category: "Organic Gardening",
+    audience: ["Students", "Farmers", "Researchers"],
+    duration: "Training manual",
+    description:
+      "Study soil fertility, composting, crop diversity, pest management, livestock integration, certification, and organic farm planning.",
+    tasks: [
+      "Build soil fertility through organic matter and biological activity.",
+      "Use crop diversity and rotations to improve resilience.",
+      "Document inputs and practices when pursuing organic certification.",
+    ],
+    source: "Food and Agriculture Organization",
+    format: "PDF training manual",
+    link: "https://www.fao.org/fileadmin/templates/nr/sustainability_pathways/docs/Compilation_techniques_organic_agriculture_rev.pdf",
+  },
+  {
+    id: "rabi-kitchen-garden",
+    title: "Rabi Kitchen Garden Advisory",
+    category: "Seasonal Gardening",
+    audience: ["Farmers", "Gardeners", "Students"],
+    duration: "Seasonal advisory",
+    description:
+      "Use ICAR's Rabi recommendations for seasonal vegetables, seed treatment, nutrients, irrigation, and crop protection.",
+    tasks: [
+      "Choose vegetables suitable for local winter temperature and available sunlight.",
+      "Treat seed and prepare nursery or beds before transplanting.",
+      "Follow crop-specific irrigation and nutrient guidance.",
+    ],
+    source: "Indian Council of Agricultural Research",
+    format: "PDF advisory",
+    link: "https://icar.gov.in/sites/default/files/2022-09/Rabi-Agro-Advisory-2021-22_0.pdf",
+  },
 ];
 
 module.exports = { gardeningTips };
